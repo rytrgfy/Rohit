@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohit personal todo</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="div">
+        <form action="main.php" method="post">
+            <label for="title">Enter your title</label>
+            <input id="title" type="text" name="Title" placeholder="Title" required>
+            <label for="text">Your text</label>
+            <textarea id="text" name="text" placeholder="Enter your task description" required></textarea>
+            <button class="button" type="submit">
+                <ion-icon name="add-outline"></ion-icon>
+            </button>
+        </form>
+        <button class="show-task" >
+            <ion-icon name="eye-outline"></ion-icon> Show my todos
+        </button>
+        
+    </div>
+
+
+    <script src="app.js"></script>
+</body>
+</html>

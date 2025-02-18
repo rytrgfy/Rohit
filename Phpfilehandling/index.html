@@ -1,0 +1,27 @@
+<form action="main.php" method="post">
+    <label for="FirstName">First Name:</label>
+    <input type="text" name="FirstName" id="FirstName" placeholder="Enter your first name">
+    <br><br>
+    
+    <label for="LastName">Last Name:</label>
+    <input type="text" name="LastName" id="LastName" placeholder="Enter your last name">
+    <br><br>
+    
+    <label for="gender">Gender:</label>
+    <input type="checkbox" name="Gender" id="Male" value="Male"> Male
+    <input type="checkbox" name="Gender" id="Female" value="Female"> Female
+    <br><br>
+    
+    <label for="skills">Skills (Choose exactly 2):</label>
+    <br>
+    <input type="checkbox" name="skills[]" value="php" id="php"> php 
+    <br>
+    <input type="checkbox" name="skills[]" value="java" id="java"> java
+    <br>
+    <input type="checkbox" name="skills[]" value="javascript" id="javascript"> javascript 
+    <br>
+    <input type="checkbox" name="skills[]" value="python" id="python"> python
+    <br><br>
+    
+    <input type="submit" value="Submit">
+</form>

@@ -1,0 +1,58 @@
+*{
+    padding: 0;
+    margin: 0;
+    margin: auto;
+  width: 50%;
+  /* border: 3px solid rgb(208, 216, 208); */
+  padding: 10px;
+  top: 100px;
+}
+
+.username{
+    height: 2vh;
+    width: 18vw;
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+.your_id{
+    height: 2vh;
+    width: 18vw;
+    background-color: rgb(0, 0, 0);
+    color: #fcfdff;
+}
+.email{
+    height: 2vh;
+    width: 18vw;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+.phonenumber{
+    height: 2vh;
+    width: 18vw;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+.password{
+    height: 2vh;
+    width: 18vw;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 252, 252);
+}
+label{
+    /* background-color: rgb(97, 43, 43); */
+    color: rgb(240, 8, 8);
+}
+.all{
+    margin-top: 10px;
+}
+.signupbutton{
+    height: 5vh;
+    width: 8vw;
+    margin-top: 10px;
+    font-size: 15px;
+    background-color: antiquewhite;
+}
+.loginlink{
+    color: rgb(253, 253, 253);
+    background-color: rgb(0, 0, 0);
+}
