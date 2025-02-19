@@ -12,19 +12,15 @@
 
     <?php
     // header('Content-Type: application/json');
-    // $nameerr = $emailerr = $websiteerr = $commenterr = $gendererr = "";
-    // $name = $email = $website = $comment = $gender = "";
+    $nameerr = $emailerr = $websiteerr = $commenterr = $genderserr = "";
+    $name = $email = $website = $comment = $gender = "";
     
 
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
-        header('Content-Type: application/json'); // Ensure response is JSON
-    
-        $nameerr = $emailerr = $websiteerr = $commenterr = $gendererr = "";
-        $name = $email = $website = $comment = $gender = "";
-
         //for name error and $name variable check 
         if (empty($_POST["name"])) {
             $nameerr = "name is required";
+            exit();
         } else {
             $name = $_POST["name"];
         }
@@ -56,26 +52,16 @@
 
 
 
-    // Display the sanitized input data
-    // echo "Your Name: " . $name . "<br>";
-    // echo "Your Email: " . $email . "<br>";
-    // echo "Your Website: " . $website . "<br>";
-    // echo "Your Comment: " . $comment . "<br>";
-    // echo "Your Gender: " . $gender . "<br>";
+    
+    echo "Your Name: " . $name . "<br>";
+    echo "Your Email: " . $email . "<br>";
+    echo "Your Website: " . $website . "<br>";
+    echo "Your Comment: " . $comment . "<br>";
+    echo "Your Gender: " . $gender . "<br>";
     
 
 
 
-    $response = [
-        "nameERR" => $nameerr,
-        "EmailERR" => $emailerr,
-        "WebsiteERR" => $websiteerr,
-        "CommentERR" => $commenterr,
-        "GenderERR" => $gendererr
-    ];
-
-    echo json_encode($response);
-    // exit();
 
     
     

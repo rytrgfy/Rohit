@@ -1,4 +1,4 @@
-<!-- <?php include("main.php");?> -->
+<?php include "main.php";?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,26 +51,26 @@
 <body>
 
     <form method="post" action="main.php">
-        <span id="nameError"></span>
+        <span id="nameError"><?php echo $nameerr;?></span>
         <br><br>
         Name: <input type="text" name="name">
 
-        <span id="emailError"></span>
+        <span id="emailError"><?php echo $emailerr;?></span>
         <br><br>
         E-mail: <input type="text" name="email">
 
 
-        <span id="websiteError"></span>
+        <span id="websiteError"><?php echo $websiteerr;?></span>
         <br><br>
         Website: <input type="text" name="website">
 
 
-        <span id="CommentError"></span>
+        <span id="CommentError"><?php echo $commenterr;?></span>
         <br><br>
         Comment: <textarea name="comment" rows="5" cols="40"></textarea>
 
 
-        <span id="GenderError"></span>
+        <span id="GenderError"><?php echo $genderserr;?></span>
         <br><br>
         Gender:
         <input type="radio" name="gender" value="female">Female
@@ -83,35 +83,7 @@
 
 
 
-    <script>
-        document.getElementById('myForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            const formData = new FormData(this);
-
-            fetch('main.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Display errors
-                document.getElementById('nameError').innerText = data.nameERR || '';
-                document.getElementById('emailError').innerText = data.EmailERR || '';
-                document.getElementById('websiteError').innerText = data.WebsiteERR || '';
-                document.getElementById('commentError').innerText = data.CommentERR || '';
-                document.getElementById('genderError').innerText = data.GenderERR || '';
-
-                // If no errors, log success message
-                if (!data.nameERR && !data.EmailERR && !data.WebsiteERR && !data.CommentERR && !data.GenderERR) {
-                    alert("Form submitted successfully!");
-                    document.getElementById("myForm").reset();
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
-
+    
 </body>
 
 </html>
