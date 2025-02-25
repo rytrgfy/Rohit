@@ -11,9 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // echo $id . "<br>";
 // echo $name . "<br>";
 // echo $city . "<br>";
-// echo $mobile . "<br>";  h
-
-
+// echo $mobile . "<br>";  
 
 
 
