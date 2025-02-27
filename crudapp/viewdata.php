@@ -1,111 +1,88 @@
 <?php
 include 'db_connect.php'; // Include database connection
-// --------------------------------------------------------view data in in format---------------------------------------->
-$id = "";
-$data = "";
+
+// Check if database exists
 if (!$conn->select_db("crud")) {
-    die("Database selection failed: <br><br>" . $conn->error);
+    die("Database selection failed: " . $conn->error);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['view']) && isset($_POST['id'])) {
-    $id = $_POST['id'];
 
-    if ($id > 0) {
-        // Query to fetch data based on ID
-        $sql = "SELECT * FROM datatable WHERE id = $id";
-        $result = $conn->query($sql);
+// ------------------------------------------------fetching data--------------------------------->
+$sql = "SELECT * FROM datatable";
+$result = $conn->query($sql);
 
-        if (!$result) {
-            die("Query failed: " . $conn->error); // Debugging output
-        } else {
-            while ($row = $result->fetch_assoc()) {
-                $data = "Name: " . ($row['name']) . "<br>" .
-                    "Mobile No: " . ($row['mobileno']) . "<br>" .
-                    "Roll No: " . ($row['rollno']) . "<br>" .
-                    "City: " . ($row['city']) . "<br>";
-            }
-        }
-
-
-    } else {
-        $data = " enter a valid ID.";
-    }
-}
-// -------------------------------------------------------delete data ------------------------------------->
-
-$id_del = "";
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete']) && isset($_POST['iddelete'])) {
-    $id_del = isset($_POST['iddelete']) ? $_POST['iddelete'] : "";
-
+//---------------------------------------------deleting the data------------------------------------->
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
+    $id_del = $_POST['iddelete'];
 
     if ($id_del > 0) {
-        // Query to delete data from database;
         $sql_del = "DELETE FROM datatable WHERE id = $id_del";
-        $del_result = $conn->query($sql_del);
-
-        if ($conn->affected_rows > 0) {
-            echo "<script>alert('Your data was deleted successfully');</script>";
+        if ($conn->query($sql_del)) {
+            echo "<script>alert('Your data was deleted successfully')
+            window.location.href = 'thankyou.html';
+            </script>";
         } else {
-            echo "<script>alert('No record found with the given ID');</script>";
+            die("Query failed: " . $conn->error);
         }
-        
-
-    } else {
-        $data = " enter a valid ID.";
     }
-
-
-
-
-
-
-
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Close the database connection
+// Close connection
 $conn->close();
 ?>
-
+<!----------------------------------------html to data in the form of table ------------------------>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Data</title>
+    <title>View & Delete Data</title>
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h2>Enter ID to View Data</h2>
-    <form method="POST" action="">
-        <label for="id">Enter ID:</label>
-        <input type="number" name="id" required>
-        <button type="submit">Submit</button>
-
-    </form>
-    
-    <h3>Result:</h3>
-    <p><?php echo $data; ?></p>
-    <form method="POST" action="" >
-        delete your data: <input type="number" name="iddelete" required>
-        <button type="submit" name="delete">Delete</button>
-
-    </form>
+    <h2>Database Records</h2>
+    <table>
+        <th>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Mobile No</th>
+                <th>Roll No</th>
+                <th>City</th>
+                <th>Action</th>
+            </tr>
+        </th>
+        <tb>
+            <!---------------------- fetching data from the database---------------------------------->
+            <?php while ($i = $result->fetch_assoc()) { ?>
+                <tr>
+                    <td><?php echo $i['id']; ?></td>
+                    <td><?php echo $i['name']; ?></td>
+                    <td><?php echo $i['mobileno']; ?></td>
+                    <td><?php echo $i['rollno']; ?></td>
+                    <td><?php echo $i['city']; ?></td>
+                    <td>
+                        <form method="POST" action="">
+                            <input type="hidden" name="iddelete" value="<?php echo $i['id']; ?>">
+                            <button type="submit" name="delete">Delete</button>
+                            <a href="update.php?id=<?php echo $i['id']; ?>"> EDIT </a>
+                            
+                        </form>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tb>
+    </table>
 
 </body>
 

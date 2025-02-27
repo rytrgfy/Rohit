@@ -1,7 +1,7 @@
 <?
 include 'db_connect.php'; // Including the database connection
 
-$name = $mobile = $rollno = $city = "";
+$name = $mobileno = $rollno = $city = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
@@ -102,7 +102,15 @@ if ($conn->query($sql_insert) === TRUE) {
 
 $conn->close();
 if (basename(__FILE__) != basename($_SERVER["PHP_SELF"])) {
-    return compact('name', 'mobileno', 'rollno', 'city');
+    function getFormData() {
+        return [
+            'name' => $_POST['name'] ?? '',
+            'mobileno' => $_POST['mobileno'] ?? '',
+            'rollno' => $_POST['rollno'] ?? '',
+            'city' => $_POST['city'] ?? ''
+        ];
+    }
+    return getFormData();
 }
 
 
