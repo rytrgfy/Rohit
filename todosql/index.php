@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['title']) && isset($_PO
 
         if ($conn->query($sql_insert_into_table) === TRUE) {
             echo '<script>alert("Data inserted successfully!");</script>';
-            exit();
+            // exit();
         } else {
             echo '<script>alert("Error inserting data: ' . $conn->error . '");</script>';
         }
@@ -65,17 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['title']) && isset($_PO
         echo '<script>alert("Please fill in all fields!");</script>';
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /* 
                         create db query
@@ -132,35 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
     }
 }
 
-
-
-
-
-
-
-
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -168,6 +129,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        button a {
+            text-decoration: none;
+            color: white;
+        }
+        .todo-item {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background: #007BFF;
+            border: none;
+            padding: 10px 15px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .edit-link {
+            display: inline-block;
+            margin-left: 10px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .edit-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -199,14 +207,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete'])) {
         <?php
     }
     ?>
-
-
-
-
-
-
-
-
     <script src="app.js"></script>
 </body>
 
