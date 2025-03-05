@@ -66,6 +66,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['title']) && isset($_PO
     }
 }
 
+empty($title);
+empty($details);
+
 /* 
                         create db query
 
