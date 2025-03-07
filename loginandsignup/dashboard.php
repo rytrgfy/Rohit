@@ -21,7 +21,6 @@ $result = $conn->query($sql);
 
 
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +40,7 @@ $result = $conn->query($sql);
         <h2>your email = <? echo $row['EMAIL']; ?> </h2>
         <h2>your password what you have saved = <? echo $row['PASSWORD']; ?> </h2>
 
-        <form method="POST" action="update.php">
+        <form method="POST" action="delete.php">
             <input type="hidden" name="iddelete" value="<?php echo $row['ID']; ?>">
             <button type="submit" name="delete">Delete</button>
             <a href="update.php?ID=<?php echo $row['ID']; ?>"> EDIT </a>
