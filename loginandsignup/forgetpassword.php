@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $_SESSION['email'] = $data['EMAIL'];
         $_SESSION['password'] = $data['PASSWORD'];
         // echo $_SESSION['email'];
-        echo "<script>window.location.href = 'otpverify.php'</script>";
+        echo "<script>window.location.href = 'otpgenerate.php'</script>";
     }else{
         echo"<script>alert('no record found with this email')</script>";
         exit();
