@@ -33,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $insert_sql = "INSERT INTO signup(NAME , EMAIL , PASSWORD , CNFPASSWORD) VALUES( '$name' , '$email' , '$password' ,'$cnfpassword') ";
     if ($conn->query($insert_sql) == TRUE) {
-        echo "query inserted successfully";
+        echo "<script>alert('signup successfull');window.location.href = 'login.html';</script>";
     }else{
-        echo "failed to insert data";
+        echo "<script>alert('signup failed');window.location.href = 'signup.html';</script>";
     }
 }
