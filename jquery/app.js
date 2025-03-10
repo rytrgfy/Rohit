@@ -1,11 +1,6 @@
 $(document).ready(function () {
 
-    $.validator.addMethod("notToday", function (value) {
-        let inputDate = new Date(value);
-        let today = new Date();
-        today.setHours(0, 0, 0, 0); // Reset time for accurate comparison
-        return inputDate < today;
-    }, "DOB must not be today's date" );
+    
 
     $("#myform").validate({
         rules: {
@@ -35,6 +30,3 @@ $(document).ready(function () {
     });
 });
 
-// to check jquey is properly working or not
-console.log(typeof jQuery); // Should print "function"
-console.log(typeof $.fn.validate); // Should print "function"
