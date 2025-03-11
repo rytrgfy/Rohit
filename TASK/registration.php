@@ -1,6 +1,5 @@
 <?php
 include "dbconn.php";
-session_start();
 
 $name = $mobile = $email = $address = $age = $gender = $photo = "";
 

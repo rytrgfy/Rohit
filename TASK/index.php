@@ -33,12 +33,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>view-data</title>
     <style>
-        a{
+        .profile-img {
+            width: 50px;
+            height: 70px;
+            /* border-radius: 50%; */
+            border: 2px solid #ddd;
+        }
+
+        a {
             color: aliceblue;
         }
-        body{
-            background-color:rgb(137, 171, 221);
+
+        body {
+            background-color: rgb(137, 171, 221);
         }
+
         table {
             width: 50%;
             margin: 20px auto;
@@ -46,17 +55,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
             border: 1px solid #ccc;
         }
 
-        td{
+        td {
             border: 1px solid #ccc;
             padding: 8px;
             text-align: center;
         }
+
         th {
             color: wheat;
         }
 
         th {
-            background:rgb(36, 35, 35);
+            background: rgb(36, 35, 35);
         }
 
         button {
@@ -92,19 +102,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
                 <th>E-mail</th>
                 <th>Address</th>
                 <th>Age</th>
+                <th>photo</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <?php if ($result->num_rows > 0) { ?>
+            <?php if ($result->num_rows > 0) {
+                $num = 1; ?>
+
                 <?php while ($i = $result->fetch_assoc()) { ?>
                     <tr>
-                        <td><?php echo $i['id']; ?></td>
+                        <td><?php echo $num++; ?></td>
                         <td><?php echo $i['name']; ?></td>
                         <td><?php echo $i['mobile']; ?></td>
                         <td><?php echo $i['email']; ?></td>
                         <td><?php echo $i['address']; ?></td>
                         <td><?php echo $i['age']; ?></td>
+                        <td><?php if (!empty($i['photo'])): ?>
+                                <img src="uploads/<?php echo $i['photo']; ?>" class="profile-img" alt="Profile Photo">
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <form method="POST" action="">
                                 <input type="hidden" name="iddelete" value="<?php echo $i['id']; ?>">
