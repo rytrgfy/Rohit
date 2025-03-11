@@ -7,10 +7,6 @@ $result = $conn->query($sql_query_get_data);
 if (!$result) {
     echo "failedto fetch data" . $conn->error;
 }
-
-
-
-// delete 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
     $id = intval($_POST['iddelete']);
     $sql_delete_query = "DELETE FROM task1 WHERE id = $id";
@@ -37,8 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>view-data</title>
     <style>
+        a{
+            color: aliceblue;
+        }
         body{
-            background-color: antiquewhite;
+            background-color:rgb(137, 171, 221);
         }
         table {
             width: 50%;
@@ -47,15 +46,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
             border: 1px solid #ccc;
         }
 
-        td,
-        th {
+        td{
             border: 1px solid #ccc;
             padding: 8px;
             text-align: center;
         }
+        th {
+            color: wheat;
+        }
 
         th {
-            background:rgb(104, 102, 102);
+            background:rgb(36, 35, 35);
         }
 
         button {
@@ -109,7 +110,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
                                 <input type="hidden" name="iddelete" value="<?php echo $i['id']; ?>">
                                 <button type="submit" name="delete">Delete</button>
                             </form>
-                            <a href="registration.php?id=<?php echo $i['id']; ?>">EDIT  </a>
+                            <br>
+                            <a href="registration.php?id=<?php echo $i['id']; ?>">--EDIT--</a>
+                            <br>
+                            <br>
                             <a href="details.php?id=<?php echo $i['id']; ?>">View Data</a>
                         </td>
                     </tr>

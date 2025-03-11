@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 include "dbconn.php";
 $email = $password = "";

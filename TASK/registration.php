@@ -74,7 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } else {
         $sql_insert_query = "INSERT INTO task1 (name, mobile, email, address, age, gender, photo) 
-        VALUES ('$name', '$mobile', '$email', '$address', $age, '$gender', '$photo');";
+            VALUES ('$name', '$mobile', '$email', '$address', '$age','$gender', '$photo');";
+
 
         if ($conn->query($sql_insert_query) === TRUE) {
             echo "<script>window.location.href = 'index.php'</script>";
@@ -98,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Registration</title>
 
     <style>
-        body{
+        body {
             background-color: ghostwhite;
         }
 
@@ -138,6 +139,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+
 </head>
 
 <body>
@@ -160,12 +164,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="gender-options">
                 Gender:
-                <input type="radio" name="gender" value="male" <?php if ($i['gender']== "Male")
-                    echo "checked"; ?>> Male
-                <input type="radio" name="gender" value="female" <?php if ($i['gender']== "female")
+                <input type="radio" name="gender" value="Male" <?php if (isset($i['gender']) && $i['gender'] == "Male")
+                    echo "checked"; ?>> male
+                <input type="radio" name="gender" value="Female" <?php if (isset($i['gender']) && $i['gender'] == "Female")
                     echo "checked"; ?>> Female
-                <input type="radio" name="gender" value="others" <?php if ($i['gender']== "Others")
+                <input type="radio" name="gender" value="Others" <?php if (isset($i['gender']) && $i['gender'] == "Others")
                     echo "checked"; ?>> Others
+
                 <br><br>
             </div>
 
@@ -188,6 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="app.js"></script>
+
 
 
 

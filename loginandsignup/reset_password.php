@@ -1,4 +1,4 @@
-<?
+<?php
 include "dbconn.php";
 session_start();
 $email_session = $_SESSION['email'];
@@ -29,17 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         } else {
             echo "reset failed: " . $conn->error;
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }
 

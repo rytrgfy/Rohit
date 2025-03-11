@@ -1,4 +1,4 @@
-<?
+<?php
 include "dbconn.php";
 
 // getting data from the name 
@@ -15,7 +15,6 @@ include "dbconn.php";
     PASSWORD VARCHAR(50),
     CNFPASSWORD VARCHAR(50)  
     );"
-
 
 */
 $name = $email = $password = $cnfpassword = "";
