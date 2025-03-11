@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
 
 </head>
 
@@ -159,8 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <br><br>
             Age: <input type="number" name="age" value="<?php echo $i['age']; ?>">
             <br><br>
-
-
             <div class="gender-options">
                 Gender:
                 <input type="radio" name="gender" value="Male" <?php if (isset($i['gender']) && $i['gender'] == "Male")
@@ -173,15 +171,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <br><br>
             </div>
 
+            
             Photo:
             <?php if (!empty($photo)): ?>
                 <br>
                 <img src="uploads/<?php echo $photo; ?>" alt="Previous Photo" width="100">
                 <br>
-                <input type="hidden" name="old_photo" value="<?php echo $photo; ?>">
+                <p>You can keep the existing photo or upload a new one.</p>
             <?php endif; ?>
 
+            <input type="hidden" id="old_photo" name="old_photo" value="<?php echo !empty($photo) ? $photo : ''; ?>">
             <input type="file" name="photo">
+
+
             <br><br>
 
             <input type="submit" name="submit" value="Submit">
