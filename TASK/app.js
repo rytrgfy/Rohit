@@ -21,7 +21,7 @@ $(document).ready(function () {
             gender: { required: true },
             photo: { 
                 required: function () {
-                    return $.trim($("#old_photo").val()) === ""; // Only required if no old photo
+                    return $.trim($("#old_photo").val()) === ""; 
                 }
             }
         },
