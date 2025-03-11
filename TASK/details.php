@@ -1,4 +1,4 @@
-<?
+<?php
 include "dbconn.php";
 
 $id = $_GET['id'] ?? null; // Check if ID is set

@@ -40,9 +40,6 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         echo "Record not found!";
         exit();
     }
-
-
-
 }
 
 
@@ -149,25 +146,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form id="myform" action="" method="post" enctype="multipart/form-data">
 
 
-            Name: <input type="text" name="name" value="<? echo $i['name']; ?>">
+            Name: <input type="text" name="name" value="<?php echo $i['name']; ?>">
             <br><br>
-            Mobile: <input type="tel" name="mobile" value="<? echo $i['mobile']; ?>">
+            Mobile: <input type="tel" name="mobile" value="<?php echo $i['mobile']; ?>">
             <br><br>
-            Email: <input type="email" name="email" value="<? echo $i['email']; ?>">
+            Email: <input type="email" name="email" value="<?php echo $i['email']; ?>">
             <br><br>
             Address: <textarea name="address" rows="4" cols="50"><?php echo $i['address']; ?></textarea>
             <br><br>
-            Age: <input type="number" name="age" value="<? echo $i['age']; ?>">
+            Age: <input type="number" name="age" value="<?php echo $i['age']; ?>">
             <br><br>
 
 
             <div class="gender-options">
                 Gender:
-                <input type="radio" name="gender" value="male" <?php if ($i['gender'] && $i['gender'] == "Male")
+                <input type="radio" name="gender" value="male" <?php if ($i['gender']== "Male")
                     echo "checked"; ?>> Male
-                <input type="radio" name="gender" value="female" <?php if ($i['gender'] && $i['gender'] == "female")
+                <input type="radio" name="gender" value="female" <?php if ($i['gender']== "female")
                     echo "checked"; ?>> Female
-                <input type="radio" name="gender" value="others" <?php if ($i['gender'] && $i['gender'] == "Others")
+                <input type="radio" name="gender" value="others" <?php if ($i['gender']== "Others")
                     echo "checked"; ?>> Others
                 <br><br>
             </div>
@@ -177,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <br>
                 <img src="uploads/<?php echo $photo; ?>" alt="Previous Photo" width="100">
                 <br>
-                <input type="text" name="old_photo" value="<?php echo $photo; ?>">
+                <input type="hidden" name="old_photo" value="<?php echo $photo; ?>">
             <?php endif; ?>
 
             <input type="file" name="photo">
