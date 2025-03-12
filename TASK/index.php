@@ -77,6 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
             cursor: pointer;
         }
 
+        .download {
+            background: rgb(0, 0, 0);
+            color: rgb(137, 171, 221);
+            padding: 5px 10px;
+            height: 30px;
+            width: 90px;
+        }
+
         a {
             margin-left: 5px;
             text-decoration: none;
@@ -147,7 +155,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['iddelete'])) {
 
     <a href="registration.php">Enter new data</a>
 
-
+    <button class="download" onclick="window.print();">
+                download
+    </button>
 </body>
 
 </html>
