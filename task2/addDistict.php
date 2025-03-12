@@ -101,14 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <!-- <div class="container">
-        <h2>Add State</h2>
-        <form method="post">
-            <label for="state">State Name:</label><br>
-            <input type="text" id="state" name="state" required><br>
-            <button type="submit" name="add_state">Submit</button>
-        </form>
-    </div> -->
+   
 
     <div class="container" style="margin-top: 20px;">
         <h2>Add District</h2>

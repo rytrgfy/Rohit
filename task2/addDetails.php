@@ -1,12 +1,22 @@
 <?php
 include "dbconn.php";
-$sql_get_data = "SELECT * FROM states ORDER BY state_name ASC";
-$result = $conn->query($sql_get_data);
 
-if (!$result) {
-    die("No data found");
+$details = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $district_id = $_POST['district']; // Get the selected district ID
+
+
+    $details = $_POST['details'];
+    $sql = "UPDATE state_details SET details = '$details' WHERE id = $district_id;";
+
+    if (!$conn->query($sql)) {
+        echo "Error updating record: " . $conn->error;
+    }
+
+    $sql_details_value = "SELECT details FROM state_details WHERE id = $district_id";
+    $result = $conn->query($sql_details_value);
+    $row = $result->fetch_assoc();
 }
-
 ?>
 
 
@@ -65,35 +75,83 @@ if (!$result) {
 
 <body>
     <h2 style="text-align: center;">Add Details</h2>
-    <form action="/submit-details" method="post">
+    <form method="POST">
+
+
         Select State:
         <select id="stateSelect" name="state">
             <option value="">Select State</option>
-            <?php
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='{$row['id']}'>{$row['state_name']}</option>";
-            }
-            ?>
         </select>
 
 
 
 
-        <label for="districtSelect">Select District:</label>
+        Select District:
         <select id="districtSelect" name="district" required>
-            <option value="">--Select District--</option>
+            <option value="">Select District</option>
         </select>
 
-
-
-
-
-        <label for="details">Details:</label>
-        <textarea id="details" name="details" rows="4" required></textarea>
+        Details:
+        <textarea id="details" name="details" rows="4"></textarea>
 
         <button type="submit">Submit</button>
+    </form>
 
     </form>
+
+
+
+
+
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function loadData(type, category_id) {
+                $.ajax({
+                    url: "load-cs.php",
+                    type: "POST",
+                    data: { type: type, id: category_id },
+                    success: function (data) {
+                        if (type == "district") {
+                            $("#districtSelect").html(data);
+                        } else {
+                            $("#stateSelect").append(data);
+                        }
+                    }
+                });
+            }
+
+            // this will load initially
+            loadData("state");
+
+            // Change event for state selection
+            $("#stateSelect").on("change", function () {
+                var state = $(this).val(); // to get state value when change
+
+                if (state != "") {
+                    loadData("district", state);
+                } else {
+                    $("#districtSelect").html('<option value="">Select District</option>');
+                }
+            });
+            // to get distict id
+            $("#districtSelect").on("change", function () {
+                var districtId = $(this).val(); // Get selected district id
+                console.log("Selected District ID: " + districtId);
+
+
+                if (districtId != "") {
+                    $.post("senddetails.php", { district_id: districtId }, function (data) {
+                        $("#details").val(data);  // Set details in textarea
+                    });
+                } else {
+                    $("#details").val(""); // Clear if no district is selected
+                }
+            });
+
+        });
+    </script>
 </body>
 
 </html>
