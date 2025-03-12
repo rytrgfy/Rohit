@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Add distict</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: rgb(255, 255, 255);
             text-align: center;
             padding: 50px;

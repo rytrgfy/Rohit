@@ -37,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Add State</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
             padding: 50px;
