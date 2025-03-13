@@ -13,4 +13,8 @@ if (isset($_POST['district_id'])) {
         echo "";
     }
 }
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 78e94048d1f2d79c67c4744abfe2f736a25fa015
