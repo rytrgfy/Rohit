@@ -1,11 +1,6 @@
 <?php
-<<<<<<< HEAD
 include "dbconn.php";
 // $conn = mysqli_connect("localhost", "root", "", "siepl") or die("Connection failed");
-=======
-
-$conn = mysqli_connect("localhost", "root", "", "siepl") or die("Connection failed");
->>>>>>> 78e94048d1f2d79c67c4744abfe2f736a25fa015
 
 if ($_POST['type'] == "state") {
     $sql = "SELECT * FROM states";
@@ -27,8 +22,4 @@ if ($_POST['type'] == "state") {
 }
 
 echo $str;
-<<<<<<< HEAD
 ?>
-=======
-?>
->>>>>>> 78e94048d1f2d79c67c4744abfe2f736a25fa015

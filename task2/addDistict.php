@@ -101,11 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-<<<<<<< HEAD
-
-=======
-   
->>>>>>> 78e94048d1f2d79c67c4744abfe2f736a25fa015
 
     <div class="container" style="margin-top: 20px;">
         <h2>Add District</h2>
