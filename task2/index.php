@@ -19,54 +19,54 @@ if (!$result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listing Page</title>
 </head>
-    <style>
-        /* body {
+<style>
+    /* body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
             padding: 50px;
         } */
 
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 20px;
-        }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
 
-        a {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background:rgb(3, 117, 240);
-            color: white;
-            border-radius: 5px;
-        }
+    a {
+        display: block;
+        margin: 10px 0;
+        padding: 10px;
+        background: rgb(3, 117, 240);
+        color: white;
+        border-radius: 5px;
+    }
 
-        /* a:hover {
+    /* a:hover {
             background: #0056b3;
         } */
 
-        table {
-            width: 80%;
-            margin: auto;
-            border-collapse: collapse;
-            background: white;
-        }
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+        background: white;
+    }
 
-        th,
-        td {
-            border: 2px solid black;
-            padding: 10px;
-            text-align: center;
-        }
+    th,
+    td {
+        border: 2px solid black;
+        padding: 10px;
+        text-align: center;
+    }
 
-        th {
-            background-color:rgb(0, 0, 0);
-            color: white;
-        }
-    </style>
+    th {
+        background-color: rgb(0, 0, 0);
+        color: white;
+    }
+</style>
 </head>
 
 <body>
@@ -82,9 +82,9 @@ if (!$result) {
         <thead>
             <tr>
                 <th>SL.NO</th>
-                <th>State</th>
-                <th>District</th>
-                <th>Details</th>
+                <th>State Available</th>
+                <th>District Available</th>
+                <th>Details Available</th>
             </tr>
         </thead>
         <tbody>
@@ -93,9 +93,9 @@ if (!$result) {
                 while ($row = $result->fetch_assoc()) { ?>
                     <tr>
                         <td><?php echo $num++; ?></td>
-                        <td><?php echo htmlspecialchars($row['state_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['district_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['details']); ?></td>
+                        <td><?php echo $row['state_name']; ?></td>
+                        <td><?php echo $row['district_name']; ?></td>
+                        <td><?php echo $row['details']; ?></td>
                     </tr>
                 <?php } ?>
             <?php } else { ?>

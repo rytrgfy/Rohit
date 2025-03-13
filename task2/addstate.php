@@ -85,9 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <div class="container">
         <h2>Add State</h2>
-        <form action="" method="post">
+        <form action="" method="post" id="myform">
             <label for="state">State Name:</label><br>
-            <input type="text" id="state" name="state" required><br>
+            <input type="text" id="state" name="state"><br>
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -119,7 +119,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </table>
 
 
+    <!-- validation for state   -->
 
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // No leading spaces validation 
+            $.validator.addMethod("noleadingspace", function (value, element) {
+                return this.optional(element) || /^\S.*$/.test(value);
+            }, "Leading spaces are not allowed");
+
+            $.validator.addMethod("regex", function (value, element) {
+                return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+            }, "Only letters and spaces are allowed");
+
+
+            // Apply validation to the form
+            $("#myform").validate({
+                rules: {
+                    state: {
+                        required: true,
+                        regex: true,
+                        noleadingspace: true
+                    }
+                },
+                messages: {
+                    state: {
+                        required: "state are required",
+                        regex: "Enter valid details (letters)",
+                        noleadingspace: "spaces not allowed"
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                },
+                submitHandler: function (form) {
+                    alert("Form submitted successfully!");
+                    form.submit();
+                }
+            });
+
+        });
+    </script>
 
 </body>
 

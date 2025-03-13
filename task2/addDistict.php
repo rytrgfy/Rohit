@@ -101,23 +101,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <!-- <div class="container">
-        <h2>Add State</h2>
-        <form method="post">
-            <label for="state">State Name:</label><br>
-            <input type="text" id="state" name="state" required><br>
-            <button type="submit" name="add_state">Submit</button>
-        </form>
-    </div> -->
+
 
     <div class="container" style="margin-top: 20px;">
         <h2>Add District</h2>
-        <form method="post">
+        <form method="post" id="myform">
             Select State:
             <select name="state">
                 <option value="">--Select State--</option>
                 <?php while ($row = $res_states->fetch_assoc()) { ?>
-                    <option value="<?= $row['id'] ?>"><?= ucfirst($row['state_name']) ?></option>
+                    <option value="<?= $row['id'] ?>"><?= $row['state_name'] ?></option>
                 <?php } ?>
             </select>
 
@@ -138,17 +131,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <tbody>
             <?php
             $num = 1;
-            while ($i = $res_districts->fetch_assoc()) {
-                echo "<tr>
-                        <td>{$num}</td>
-                        <td>" . ucfirst($i['state_name']) . "</td>
-                        <td>" . (!empty($i['district_name']) ? ucfirst($i['district_name']) : 'N/A') . "</td>
-                      </tr>";
-                $num++;
-            }
-            ?>
+            while ($i = $res_districts->fetch_assoc()) { ?>
+                <tr>
+                    <td> <?php echo $num ?></td>
+                    <td> <?php echo $i['state_name'] ?></td>
+                    <td> <?php echo !empty($i['district_name']) ? $i['district_name'] : 'N/A' ?> </td>
+                </tr>
+                <?php $num++; ?>
+            <?php } ?>
+
         </tbody>
     </table>
+
+
+
+
+    <!--  validation  -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            // No leading spaces validation
+            $.validator.addMethod("noleadingspace", function (value, element) {
+                return this.optional(element) || /^\S.*$/.test(value);
+            }, "Leading spaces are not allowed");
+
+            $.validator.addMethod("regex", function (value, element) {
+                return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+            }, "Only letters and spaces are allowed");
+
+
+            // Apply validation to the form
+            $("#myform").validate({
+                rules: {
+                    district: {
+                        required: true,
+                        regex: true,
+                        noleadingspace: true
+                    }
+                },
+                messages: {
+                    district: {
+                        required: "district are required",
+                        regex: "Enter valid details (letters)",
+                        noleadingspace: "spaces not allowed"
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
+                },
+                submitHandler: function (form) {
+                    alert("Form submitted successfully!");
+                    form.submit();
+                }
+            });
+
+        });
+    </script>
 </body>
 
 </html>
