@@ -178,7 +178,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 while ($row = $result->fetch_assoc()) {
                     // Check if all values are not empty then only show
                     if (!empty($row['state_name']) && !empty($row['district_name']) && !empty($row['details'])) {
-                        // echo "<script>alert('you cannot modify');window.location.href</script>";
                         ?>
                         <tr>
                             <td><?php echo $num++; ?></td>
