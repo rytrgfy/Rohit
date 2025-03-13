@@ -157,7 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             FROM state_details sd
             JOIN states s ON s.id = sd.state_id 
             WHERE sd.details IS NOT NULL AND sd.details <> '' 
-            ORDER BY sd.id DESC;"
+            ORDER BY s.state_name ASC;"
             ;
 
 

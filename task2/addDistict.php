@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $sql_insert_district = "INSERT INTO state_details (state_id, district_name) VALUES ('$state_id', '$district')";
 
             if ($conn->query($sql_insert_district)) {
-                // echo "<script>alert('District added successfully'); window.location.href='';</script>";
+                echo "<script>alert('District added successfully'); window.location.href='addDistict.php';</script>";
             } else {
-                echo "<p style='color: red;'>Error: " . $conn->error . "</p>";
+                echo "<p style='color: red;'>Error: 'duplicate entry not allowed'</p>";
             }
         } else {
             echo "<p style='color: red;'>Please select a state and enter a district name.</p>";
