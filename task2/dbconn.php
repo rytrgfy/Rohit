@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "siepl";
+$dbname = "TASK2";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed:<br> " . $conn->connect_error);
 }
 
-if (!$conn->select_db("siepl")) {
+if (!$conn->select_db("TASK2")) {
     die("Database selection failed: <br><br>" . $conn->error);
 }
 

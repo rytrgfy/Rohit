@@ -1,16 +1,20 @@
 <?php
 include "dbconn.php";
 
-if (isset($_POST['district_id'])) {
-    $district_id = $_POST['district_id'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $district_id = isset($_POST['district_id']) ? (int) $_POST['district_id'] : 0;
 
-    $sql = "SELECT details FROM state_details WHERE id = $district_id";
-    $result = $conn->query($sql);
+    if ($district_id > 0) {
+        $query = "SELECT details FROM state_details WHERE id = $district_id AND details IS NOT NULL AND details <> ''";
+        $result = $conn->query($query);
 
-    if ($row = $result->fetch_assoc()) {
-        echo $row['details']; 
+        if ($result && $result->num_rows > 0) {
+            echo "exists"; // Return "exists" if details are found
+        } else {
+            echo "not_exists"; // Return "not_exists" if details are not found
+        }
     } else {
-        echo "";
+        echo "invalid"; // Return "invalid" if district ID is missing
     }
 }
 ?>

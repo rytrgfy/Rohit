@@ -2,7 +2,7 @@
 include "dbconn.php";
 
 // Corrected SQL JOIN query
-$sql_join_operation = "SELECT s.id AS state_id, s.state_name, sd.district_name, sd.details FROM states s LEFT JOIN state_details sd ON s.id = sd.state_id";
+$sql_join_operation = "SELECT s.id AS state_id, s.state_name, sd.district_name, sd.details FROM states s LEFT JOIN state_details sd ON s.id = sd.state_id order by s.state_name";
 
 $result = $conn->query($sql_join_operation);
 if (!$result) {
@@ -20,12 +20,11 @@ if (!$result) {
     <title>Listing Page</title>
 </head>
 <style>
-    /* body {
-            font-family: Arial, sans-serif;
+    body {
             background-color: #f4f4f4;
-            text-align: center;
+            /* text-align: centergb(175, 175, 175) */
             padding: 50px;
-        } */
+        }
 
     .container {
         background: white;
@@ -79,32 +78,37 @@ if (!$result) {
     </div>
 
     <table>
-        <thead>
-            <tr>
-                <th>SL.NO</th>
-                <th>State Available</th>
-                <th>District Available</th>
-                <th>Details Available</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($result->num_rows > 0) {
-                $num = 1;
-                while ($row = $result->fetch_assoc()) { ?>
-                    <tr>
-                        <td><?php echo $num++; ?></td>
-                        <td><?php echo $row['state_name']; ?></td>
-                        <td><?php echo $row['district_name']; ?></td>
-                        <td><?php echo $row['details']; ?></td>
-                    </tr>
-                <?php } ?>
-            <?php } else { ?>
+    <thead>
+        <tr>
+            <th>SL.NO</th>
+            <th>State Available</th>
+            <th>District Available</th>
+            <th>Details Available</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if ($result->num_rows > 0) {
+            $num = 1;
+            while ($row = $result->fetch_assoc()) { ?>
                 <tr>
-                    <td colspan="4" style="text-align: center;">No data available.</td>
+                    <td><?php echo $num++; ?></td>
+                    <td><?php echo !empty(trim($row['state_name'])) ? $row['state_name'] : '<span style="color:red;">N/A</span>'; ?>
+                    </td>
+                    <td><?php echo !empty(trim($row['district_name'])) ? $row['district_name'] : '<span style="color:red;">N/A</span>'; ?>
+                    </td>
+                    <td><?php echo !empty(trim($row['details'])) ? $row['details'] : '<span style="color:red;">No data available</span>'; ?>
+                    </td>
                 </tr>
             <?php } ?>
-        </tbody>
-    </table>
+        <?php } else { ?>
+            <tr>
+                <td colspan="4" style="text-align: center; color:red;">No data available.</td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
+
 
 </body>
 
