@@ -21,10 +21,10 @@ if (!$result) {
 </head>
 <style>
     body {
-            background-color: #f4f4f4;
-            /* text-align: centergb(175, 175, 175) */
-            padding: 50px;
-        }
+        background-color: #f4f4f4;
+        /* text-align: centergb(175, 175, 175) */
+        padding: 50px;
+    }
 
     .container {
         background: white;
@@ -78,35 +78,58 @@ if (!$result) {
     </div>
 
     <table>
-    <thead>
-        <tr>
-            <th>SL.NO</th>
-            <th>State Available</th>
-            <th>District Available</th>
-            <th>Details Available</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if ($result->num_rows > 0) {
-            $num = 1;
-            while ($row = $result->fetch_assoc()) { ?>
+        <thead>
+            <tr>
+                <th>SL.NO</th>
+                <th>State Available</th>
+                <th>District Available</th>
+                <th>Details Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($result->num_rows > 0) { ?>
+                <?php
+                $num = 1;
+                $data = [];
+
+                // Fetch data and group by state_name
+                while ($row = $result->fetch_assoc()) {
+                   
+                    $data[$row['state_name']][] = $row;
+                }
+                ?>
+
+                <?php foreach ($data as $state => $rows) { ?>
+                    <?php
+                    $rowspan = count($rows);
+                    $firstRow = true;
+                    ?>
+
+                    <?php foreach ($rows as $row) { ?>
+                        <tr>
+                            <?php if ($firstRow) { ?>
+                                <td rowspan="<?php echo $rowspan; ?>"><?php echo $num++; ?></td>
+                                <td rowspan="<?php echo $rowspan; ?>"><?php echo $state; ?></td>
+                                <?php $firstRow = false; ?>
+                            <?php } ?>
+
+                            <td><?php echo !empty($row['district_name']) ? $row['district_name'] : '<span style="color:red;">N/A</span>'; ?>
+                            </td>
+                            <td><?php echo !empty($row['details']) ? $row['details'] : '<span style="color:red;">No data available</span>'; ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                <?php } ?>
+
+            <?php } else { ?>
                 <tr>
-                    <td><?php echo $num++; ?></td>
-                    <td><?php echo !empty(trim($row['state_name'])) ? $row['state_name'] : '<span style="color:red;">N/A</span>'; ?>
-                    </td>
-                    <td><?php echo !empty(trim($row['district_name'])) ? $row['district_name'] : '<span style="color:red;">N/A</span>'; ?>
-                    </td>
-                    <td><?php echo !empty(trim($row['details'])) ? $row['details'] : '<span style="color:red;">No data available</span>'; ?>
-                    </td>
+                    <td colspan="4" style="text-align:center; color:red;">No data available.</td>
                 </tr>
             <?php } ?>
-        <?php } else { ?>
-            <tr>
-                <td colspan="4" style="text-align: center; color:red;">No data available.</td>
-            </tr>
-        <?php } ?>
-    </tbody>
-</table>
+
+        </tbody>
+    </table>
+
 
 
 
