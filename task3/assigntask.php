@@ -3,23 +3,35 @@ include "dbconn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
     $task_name = trim($_POST['task_details']);
-    $selected_employees_array = isset($_POST['selected_employees_div_data']) ? $_POST['selected_employees_div_data'] : [];
+    $selected_employees_array = isset($_POST['selected_employees']) ? (array) $_POST['selected_employees'] : [];
 
     if (empty($task_name) || empty($selected_employees_array)) {
+        // echo "cannot go" . "<br>";
         echo "<script>alert('Cannot be empty select employee then assign task');window.location.href = 'assigntask.php';</script>";
     }
+    
 
-    // Convert selected employees array to a comma-separated string
+    // // Convert selected employees array to a comma-separated string
     $assign_to = implode(',', $selected_employees_array);
+
+    // echo "<pre>";
+    // print_r($selected_employees_array);
+    // echo "</pre>";
+
+
+
 
     $sql = "INSERT INTO taskassign (task_name, assign_to) VALUES ('$task_name', '$assign_to')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>alert('Task Assigned Successfully');window.location.href = 'assigntask.php'</script>";
+        // exit();
     } else {
         // $error = $conn->error;
         echo "<script>alert('Cannot assign same task: '); window.location.href = 'assigntask.php'</script>";
     }
+    // echo $assign_to;
+    // echo $task_name;
 }
 
 
@@ -32,131 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>assigntask</title>
-    <style>
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            margin-top: auto;
-        }
-
-        .error {
-            color: red;
-        }
-
-        body {
-            background-color: #f8f9fa;
-            text-align: center;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        form {
-            background: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 2px 2px 5px gray;
-            max-width: 350px;
-            margin: auto;
-        }
-
-        h2 {
-            color: black;
-            font-size: 18px;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        select,
-        textarea,
-        button {
-            width: 100%;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid gray;
-            margin-top: 5px;
-        }
-
-        .addbtn {
-            background-color: green;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .addbtn {
-            background-color: green;
-            color: white;
-            font-size: 16px;
-
-        }
-
-        .addbtn:hover {
-            background-color: orange;
-        }
-
-        button {
-            background-color: grey;
-            color: #f8f9fa;
-        }
-
-        button:hover {
-            background-color: hsl(0, 88.70%, 65.30%);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-        }
-
-        th,
-        td {
-            padding: 10px;
-            border: 1px solid gray;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        th {
-            background-color: black;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: lightgray;
-        }
-
-        .highlight {
-            border: 2px solid red;
-            background-color: #ffe6e6;
-        }
-
-        a {
-            color: blue;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .employee {
-            color: cadetblue;
-            font-size: x-large;
-        }
-    </style>
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 
 
@@ -173,13 +62,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
                     <select class="dropdown_menu">
                         <option value="">-- Select Employee --</option>
                     </select>
-                    <button type="button" class="remove_employee">Remove</button>
+                    <button type="button" class="remove_employee">Remove (-)</button>
                 </div>
             </div>
+            <input type="hidden" name="selected_employees" id="selected_employees_input">
+
             <span id="employee_error" style="color: red;"></span>
             <br><br>
 
-            <button class="addbtn" type="button" id="add_employee">ADD</button>
+            <button class="addbtn" type="button" id="add_employee">ADD(+)</button>
             <br><br>
 
             <span id="task_error" style="color: red;"></span>
@@ -197,46 +88,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
 
             // Load employees on page load
             $.post("load-employee.php", function (data) {
-                $(".dropdown_menu").append(data); // Append employees to all dropdowns
+                $(".dropdown_menu").append(data);
             });
 
-            // Add new dropdown when clicking "ADD"
+            // Function to update dropdown options dynamically
+            function update_dropdown_ptions() {
+                let selectedEmployees = [];
+
+                // Collect all selected employees
+                $(".dropdown_menu").each(function () {
+                    let emp_id = $(this).val();
+                    if (emp_id) {
+                        selectedEmployees.push(emp_id);
+                    }
+                });
+
+                // Reset visibility of all options first
+                $(".dropdown_menu option").show();
+
+                // Hide selected employees from all dropdowns
+                $(".dropdown_menu").each(function () {
+                    let dropdown = $(this);
+                    selectedEmployees.forEach(function (emp_id) {
+                        dropdown.find(`option[value="${emp_id}"]`).hide();
+                    });
+                });
+            }
+
+            // Add new dropdown when clicking "Add Employee"
             $("#add_employee").click(function () {
-                let clone = $(".dropdown_wrapper_child:first").clone(); // Clone first dropdown
+                let clone = $(".dropdown_wrapper_child:first").clone(); // Clone the first dropdown
                 clone.find("select").val(""); // Reset dropdown selection
                 $("#dropdown_container_main").append(clone); // Append cloned dropdown
+
+                update_dropdown_ptions(); // Update dropdown options to remove already selected employees
             });
 
-            // When selecting an employee, hide from other dropdowns
+            // Prevent duplicate selection across dropdowns
             $(document).on("change", ".dropdown_menu", function () {
-                let selected_emp_id = $(this).val();
-                console.log(" selected employee id = ", selected_emp_id);
-
-                // Hide the selected employee from other dropdowns
-                $(".dropdown_menu").not(this).find(`option[value="${selected_emp_id}"]`).hide();
+                update_dropdown_ptions();
             });
 
-            // When clicking "Remove", add employee back to all dropdowns and remove the div
+            // When clicking "Remove", restore employee option and remove the div
             $(document).on("click", ".remove_employee", function () {
                 let dropdown_wrapper = $(this).closest(".dropdown_wrapper_child");
-                let emp_id = dropdown_wrapper.find("select").val();
+                dropdown_wrapper.remove(); // Remove dropdown
 
-                // Show the removed employee back in all dropdowns
-                $(".dropdown option[value='" + emp_id + "']").show();
+                update_dropdown_ptions(); // Refresh dropdown options after removal
 
-                dropdown_wrapper.remove(); // Remove dropdown wrapper
+                // Ensure at least one dropdown remains
+                if ($(".dropdown_wrapper_child").length === 0) {
+                    alert("At least one employee selection is required!");
+                    window.location.href = "assigntask.php";
+                    $("#add_employee").trigger("click"); // Auto-add one dropdown if all are removed
+                }
             });
 
-            // Form validation
+            // Form validation before submission
             $("#my_form").submit(function (e) {
-                let selected_count = $(".dropdown_menu").filter(function () {
-                    return $(this).val() !== "";
-                }).length;
+                let selected_employees = [];
+
+                // Collect all selected employee IDs
+                $(".dropdown_menu").each(function () {
+                    let selected_emp_id = $(this).val();
+                    if (selected_emp_id) {
+                        selected_employees.push(selected_emp_id);
+                    }
+                });
+
+                console.log("Final Selected Employees Array:", selected_employees);
+
+                // Store selected employees in a hidden input
+                $("#selected_employees_input").val(selected_employees.join(","));
 
                 let task_details = $("#task_details").val().trim();
                 let is_valid = true;
 
-                if (selected_count === 0) {
+                if (selected_employees.length === 0) {
                     $("#employee_error").text("Please select at least one employee.");
                     is_valid = false;
                 } else {
@@ -244,7 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
                 }
 
                 if (task_details === "") {
-                    $("#task_error").text("Please enter task details.");
+                    $("#task_error").text("");
                     is_valid = false;
                 } else {
                     $("#task_error").text("");
@@ -255,11 +183,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
                 }
             });
         });
+
+
     </script>
 
-
-
-    </script>
 
     <!-- form validation using jquery -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>

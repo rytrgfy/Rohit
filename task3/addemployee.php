@@ -24,109 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add-Employee</title>
-    <style>
-        /* Reset default browser styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 50px;
-        }
-
-        /* Form container */
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            width: 380px;
-            text-align: center;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        /* Label styling */
-        label {
-            font-weight: bold;
-            display: block;
-            margin-top: 10px;
-            text-align: left;
-        }
-
-        /* Input fields */
-        input {
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
-            font-size: 16px;
-        }
-
-        /* Error message styling */
-        .error {
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        /* Submit button styling */
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-            width: 100%;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        /* Navigation links */
-        .nav-links {
-            margin-top: 15px;
-        }
-
-        .nav-links a {
-            display: block;
-            color: blue;
-            text-decoration: none;
-            font-size: 16px;
-            margin: 5px 0;
-        }
-
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -142,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="nav-links">
             <a href="assigntask.php">Assign Task</a>
             <a href="addemployee.php">Add Employee</a>
-            <a href="index.php">Index</a>
+            <a href="index.php">View all Data</a>
         </div>
     </div>
 
