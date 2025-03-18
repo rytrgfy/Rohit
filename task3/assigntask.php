@@ -2,17 +2,17 @@
 include "dbconn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
-    $task_name = trim($_POST['task_details']);
-    $selected_employees_array = isset($_POST['selected_employees']) ? (array) $_POST['selected_employees'] : [];
+    $task_detail = $_POST['task_details'];
+    $emp_selection = isset($_POST['selected_employees']) ? (array) $_POST['selected_employees'] : [];
 
-    if (empty($task_name) || empty($selected_employees_array)) {
+    if (empty($task_detail) || empty($emp_selection)) {
         // echo "cannot go" . "<br>";
         echo "<script>alert('Cannot be empty select employee then assign task');window.location.href = 'assigntask.php';</script>";
     }
     
 
     // // Convert selected employees array to a comma-separated string
-    $assign_to = implode(',', $selected_employees_array);
+    $assigned_people = implode(',', $emp_selection);
 
     // echo "<pre>";
     // print_r($selected_employees_array);
@@ -21,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
 
 
 
-    $sql = "INSERT INTO taskassign (task_name, assign_to) VALUES ('$task_name', '$assign_to')";
+    $query_str = "INSERT INTO taskassign (task_name, assign_to, status) VALUES ('$task_detail', '$assigned_people', 0)";
 
-    if ($conn->query($sql) === TRUE) {
+    if ($conn->query($query_str) === TRUE) {
         echo "<script>alert('Task Assigned Successfully');window.location.href = 'assigntask.php'</script>";
         // exit();
     } else {
@@ -87,19 +87,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
             console.log("ajax loaded");
 
             // Load employees on page load
-            $.post("load-employee.php", function (data) {
-                $(".dropdown_menu").append(data);
+            $.post("load-employee.php", function (response_data) {
+                $(".dropdown_menu").append(response_data);
             });
 
             // Function to update dropdown options dynamically
-            function update_dropdown_ptions() {
-                let selectedEmployees = [];
+            function refresh_employee_list() {
+                let emp_list = [];
 
                 // Collect all selected employees
                 $(".dropdown_menu").each(function () {
                     let emp_id = $(this).val();
                     if (emp_id) {
-                        selectedEmployees.push(emp_id);
+                        emp_list.push(emp_id);
                     }
                 });
 
@@ -108,33 +108,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
 
                 // Hide selected employees from all dropdowns
                 $(".dropdown_menu").each(function () {
-                    let dropdown = $(this);
-                    selectedEmployees.forEach(function (emp_id) {
-                        dropdown.find(`option[value="${emp_id}"]`).hide();
+                    let menu_elem = $(this);
+                    emp_list.forEach(function (emp_id) {
+                        menu_elem.find(`option[value="${emp_id}"]`).hide();
                     });
                 });
             }
 
             // Add new dropdown when clicking "Add Employee"
             $("#add_employee").click(function () {
-                let clone = $(".dropdown_wrapper_child:first").clone(); // Clone the first dropdown
-                clone.find("select").val(""); // Reset dropdown selection
-                $("#dropdown_container_main").append(clone); // Append cloned dropdown
+                let dup_el = $(".dropdown_wrapper_child:first").clone(); // Clone the first dropdown
+                dup_el.find("select").val(""); // Reset dropdown selection
+                $("#dropdown_container_main").append(dup_el); // Append cloned dropdown
 
-                update_dropdown_ptions(); // Update dropdown options to remove already selected employees
+                refresh_employee_list(); // Update dropdown options to remove already selected employees
             });
 
             // Prevent duplicate selection across dropdowns
             $(document).on("change", ".dropdown_menu", function () {
-                update_dropdown_ptions();
+                refresh_employee_list();
             });
 
             // When clicking "Remove", restore employee option and remove the div
             $(document).on("click", ".remove_employee", function () {
-                let dropdown_wrapper = $(this).closest(".dropdown_wrapper_child");
-                dropdown_wrapper.remove(); // Remove dropdown
+                let dropdown_row = $(this).closest(".dropdown_wrapper_child");
+                dropdown_row.remove(); // Remove dropdown
 
-                update_dropdown_ptions(); // Refresh dropdown options after removal
+                refresh_employee_list(); // Refresh dropdown options after removal
 
                 // Ensure at least one dropdown remains
                 if ($(".dropdown_wrapper_child").length === 0) {
@@ -145,41 +145,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
             });
 
             // Form validation before submission
-            $("#my_form").submit(function (e) {
-                let selected_employees = [];
+            $("#my_form").submit(function (ev) {
+                let employee_ids = [];
 
                 // Collect all selected employee IDs
                 $(".dropdown_menu").each(function () {
-                    let selected_emp_id = $(this).val();
-                    if (selected_emp_id) {
-                        selected_employees.push(selected_emp_id);
+                    let emp_id = $(this).val();
+                    if (emp_id) {
+                        employee_ids.push(emp_id);
                     }
                 });
 
-                console.log("Final Selected Employees Array:", selected_employees);
+                console.log("Final Selected Employees Array:", employee_ids);
 
                 // Store selected employees in a hidden input
-                $("#selected_employees_input").val(selected_employees.join(","));
+                $("#selected_employees_input").val(employee_ids.join(","));
 
-                let task_details = $("#task_details").val().trim();
-                let is_valid = true;
+                let work_detail = $("#task_details").val().trim();
+                let form_ok = true;
 
-                if (selected_employees.length === 0) {
+                if (employee_ids.length === 0) {
                     $("#employee_error").text("Please select at least one employee.");
-                    is_valid = false;
+                    form_ok = false;
                 } else {
                     $("#employee_error").text("");
                 }
 
-                if (task_details === "") {
+                if (work_detail === "") {
                     $("#task_error").text("");
-                    is_valid = false;
+                    form_ok = false;
                 } else {
                     $("#task_error").text("");
                 }
 
-                if (!is_valid) {
-                    e.preventDefault();
+                if (!form_ok) {
+                    ev.preventDefault();
                 }
             });
         });
@@ -195,13 +195,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
     <script>
         $(document).ready(function () {
             // No leading spaces validation
-            $.validator.addMethod("noleadingspace", function (value, element) {
-                return this.optional(element) || /^\S.*$/.test(value); // first character is not a space
+            $.validator.addMethod("noleadingspace", function (val, e) {
+                return this.optional(e) || /^\S.*$/.test(val); // first character is not a space
             }, "Leading spaces are not allowed");
 
             // regex validation method (Allows letters, numbers, spaces, apostrophes, and dots)
-            $.validator.addMethod("regex", function (value, element) {
-                return this.optional(element) || /^[a-zA-Z0-9'.\s]{1,40}$/.test(value);
+            $.validator.addMethod("regex", function (val, e) {
+                return this.optional(e) || /^[a-zA-Z0-9'.\s]{1,40}$/.test(val);
             }, "Only letters, numbers, spaces, apostrophes, and dots are allowed (Max 40 characters)");
 
             // Apply validation to the form
@@ -220,8 +220,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
                         noleadingspace: "Leading spaces are not allowed"
                     }
                 },
-                errorPlacement: function (error, element) {
-                    error.insertAfter(element);
+                errorPlacement: function (err_msg, e) {
+                    err_msg.insertAfter(e);
                 },
                 submitHandler: function (form) {
                     form.submit();

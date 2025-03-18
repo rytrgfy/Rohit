@@ -127,9 +127,9 @@ if (isset($_POST['update_status']) && isset($_POST['task_id']) && isset($_POST['
                                 <form class='status_form' method='post'>
                                     <input type='hidden' name='task_id' value='{$row['id']}'>
                                     <select name='status' class='status_dropdown' onchange='this.form.submit()'>
-                                        <option value='0'" . ($status == 0 ? ' selected' : '') . ">Todo</option>
-                                        <option value='2'" . ($status == 2 ? ' selected' : '') . ">In Progress</option>
-                                        <option value='1'" . ($status == 1 ? ' selected' : '') . ">Completed</option>
+                                        <option value='0'" . ($status === 0 ? ' selected' : '') . ">Todo</option>
+                                        <option value='2'" . ($status === 2 ? ' selected' : '') . ">In Progress</option>
+                                        <option value='1'" . ($status === 1 ? ' selected' : '') . ">Completed</option>
                                     </select>
                                     <input type='hidden' name='update_status' value='1'>
                                 </form>
