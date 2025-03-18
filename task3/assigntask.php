@@ -2,24 +2,23 @@
 include "dbconn.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
-    $task_name = trim($_POST['taskdetails']);
-    $selectedEmployees = isset($_POST['selectedEmployees']) ? $_POST['selectedEmployees'] : [];
+    $task_name = trim($_POST['task_details']);
+    $selected_employees_array = isset($_POST['selected_employees_div_data']) ? $_POST['selected_employees_div_data'] : [];
 
-    if (empty($task_name) || empty($selectedEmployees)) {
+    if (empty($task_name) || empty($selected_employees_array)) {
         echo "<script>alert('Cannot be empty select employee then assign task');window.location.href = 'assigntask.php';</script>";
-
     }
 
     // Convert selected employees array to a comma-separated string
-    $assign_to = implode(',', $selectedEmployees);
+    $assign_to = implode(',', $selected_employees_array);
 
     $sql = "INSERT INTO taskassign (task_name, assign_to) VALUES ('$task_name', '$assign_to')";
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>alert('Task Assigned Successfully');window.location.href = 'assigntask.php'</script>";
     } else {
-        $error = $conn->error;
-        echo "<script>alert('Cannot assign same task: " . addslashes($error) . "'); window.location.href = 'assigntask.php'</script>";
+        // $error = $conn->error;
+        echo "<script>alert('Cannot assign same task: '); window.location.href = 'assigntask.php'</script>";
     }
 }
 
@@ -167,27 +166,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
     <div class="container">
         <a href="index.php">GO-BACK</a>
         <h2>Assign Task</h2>
-        <form method="post" id="myform">
+        <form id="my_form" method="post">
             <label>Select employee:</label>
-            <select id="employeenames">
-                <option value="">-- Select Employee --</option>
-            </select>
-            <span id="employeeError" style="color: red;"></span>
+            <div id="dropdown_container_main">
+                <div class="dropdown_wrapper_child">
+                    <select class="dropdown_menu">
+                        <option value="">-- Select Employee --</option>
+                    </select>
+                    <button type="button" class="remove_employee">Remove</button>
+                </div>
+            </div>
+            <span id="employee_error" style="color: red;"></span>
             <br><br>
 
-            <button class="addbtn" type="button" id="addEmployee">ADD</button>
+            <button class="addbtn" type="button" id="add_employee">ADD</button>
             <br><br>
 
-            <!-- Display selected employees -->
-            <div id="selectedEmployees"></div>
-            <span id="taskError" style="color: red;"></span>
+            <span id="task_error" style="color: red;"></span>
             <br>
 
-            <textarea name="taskdetails" id="taskdetails" required></textarea>
+            <textarea name="task_details" id="task_details" required></textarea>
             <button class="addbtn" type="submit" name="add_task">Submit</button>
-            
-            
-
         </form>
     </div>
 
@@ -198,85 +197,79 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
 
             // Load employees on page load
             $.post("load-employee.php", function (data) {
-                $("#employeenames").append(data);
+                $(".dropdown_menu").append(data); // Append employees to all dropdowns
             });
 
-            // Add employee to list & remove from dropdown
-            $("#addEmployee").click(function () {
-                let selectedOption = $("#employeenames option:selected");
-                let empId = selectedOption.val();
-                let empName = selectedOption.text();
-                console.log(empName, empId);
-
-                if (empId) {
-                    $("#selectedEmployees").append(
-                        `<div class="employee" data-id="${empId}">
-                    ${empName} <button class="removeEmployee">Remove</button>
-                    <input type="hidden" name="selectedEmployees[]" value="${empId}">
-                </div>`
-                    );
-                    selectedOption.remove(); // Remove from dropdown
-
-                    // Remove error message if employee is added
-                    $("#employeeError").text("");
-                } else {
-                    $("#employeeError").text("Please select an employee.");
-                }
+            // Add new dropdown when clicking "ADD"
+            $("#add_employee").click(function () {
+                let clone = $(".dropdown_wrapper_child:first").clone(); // Clone first dropdown
+                clone.find("select").val(""); // Reset dropdown selection
+                $("#dropdown_container_main").append(clone); // Append cloned dropdown
             });
 
-            // Remove employee from list & add back to dropdown
-            $(document).on("click", ".removeEmployee", function () {
-                let employeeDiv = $(this).closest(".employee");
-                let empId = employeeDiv.data("id");
-                let empName = employeeDiv.text().replace("Remove", "").trim();
+            // When selecting an employee, hide from other dropdowns
+            $(document).on("change", ".dropdown_menu", function () {
+                let selected_emp_id = $(this).val();
+                console.log(" selected employee id = ", selected_emp_id);
 
-                $("#employeenames").append(`<option value="${empId}">${empName}</option>`);
-                employeeDiv.remove(); // Remove from selected list
+                // Hide the selected employee from other dropdowns
+                $(".dropdown_menu").not(this).find(`option[value="${selected_emp_id}"]`).hide();
             });
 
-            // Form submission validation
-            $("form").submit(function (e) {
-                let selectedEmployees = $("#selectedEmployees").children().length;
-                let taskDetails = $("#taskdetails").val().trim();
-                let isValid = true;
+            // When clicking "Remove", add employee back to all dropdowns and remove the div
+            $(document).on("click", ".remove_employee", function () {
+                let dropdown_wrapper = $(this).closest(".dropdown_wrapper_child");
+                let emp_id = dropdown_wrapper.find("select").val();
 
-                // Validate employee selection
-                if (selectedEmployees === 0) {
-                    $("#employeeError").text("Please select at least one employee.");
-                    isValid = false;
+                // Show the removed employee back in all dropdowns
+                $(".dropdown option[value='" + emp_id + "']").show();
+
+                dropdown_wrapper.remove(); // Remove dropdown wrapper
+            });
+
+            // Form validation
+            $("#my_form").submit(function (e) {
+                let selected_count = $(".dropdown_menu").filter(function () {
+                    return $(this).val() !== "";
+                }).length;
+
+                let task_details = $("#task_details").val().trim();
+                let is_valid = true;
+
+                if (selected_count === 0) {
+                    $("#employee_error").text("Please select at least one employee.");
+                    is_valid = false;
                 } else {
-                    $("#employeeError").text("");
+                    $("#employee_error").text("");
                 }
 
-                // Validate task details
-                if (taskDetails === "") {
-                    $("#taskError").text("Task details cannot be empty.");
-                    isValid = false;
+                if (task_details === "") {
+                    $("#task_error").text("Please enter task details.");
+                    is_valid = false;
                 } else {
-                    $("#taskError").text("");
+                    $("#task_error").text("");
                 }
 
-                if (!isValid) {
-                    e.preventDefault(); // Prevent form submission if validation fails
+                if (!is_valid) {
+                    e.preventDefault();
                 }
             });
         });
-
     </script>
 
 
 
-    <!-- form validation using j query  -->
+    </script>
 
+    <!-- form validation using jquery -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <script>
         $(document).ready(function () {
-
             // No leading spaces validation
             $.validator.addMethod("noleadingspace", function (value, element) {
-                return this.optional(element) || /^\S.*$/.test(value); //  first character is not a space
+                return this.optional(element) || /^\S.*$/.test(value); // first character is not a space
             }, "Leading spaces are not allowed");
 
             // regex validation method (Allows letters, numbers, spaces, apostrophes, and dots)
@@ -285,16 +278,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
             }, "Only letters, numbers, spaces, apostrophes, and dots are allowed (Max 40 characters)");
 
             // Apply validation to the form
-            $("#myform").validate({
+            $("#my_form").validate({
                 rules: {
-                    taskdetails: {
+                    task_details: {
                         required: true,
                         regex: true,
                         noleadingspace: true
                     }
                 },
                 messages: {
-                    taskdetails: {
+                    task_details: {
                         required: "Task is required",
                         regex: "Enter valid details (letters, numbers, spaces, apostrophes, dots allowed)",
                         noleadingspace: "Leading spaces are not allowed"
@@ -304,16 +297,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
                     error.insertAfter(element);
                 },
                 submitHandler: function (form) {
-                    // alert("Form submitted successfully!");
                     form.submit();
                 }
             });
-
         });
     </script>
 
-
     <footer> © Rohit Kumar Sahoo</footer>
+
+
+
 </body>
 
 </html>

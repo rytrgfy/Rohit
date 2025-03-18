@@ -23,28 +23,39 @@ $res = $conn->query($sql);
         }
 
         .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 20px;
+            display: flex;
+            gap: 5px;
+            /* Space between buttons */
+            position: fixed;
+            top: 10px;
+            /* Adjust top position */
+            right: 10px;
+            /* Align to the right side */
         }
 
         a {
             display: block;
             width: 100px;
-            height: 50px;
-            /* margin: 10px ; */
-            /* padding: 10px; */
+            /* Smaller button */
+            height: 35px;
+            /* Smaller button */
             background: rgb(84, 233, 116);
             color: black;
+            text-align: center;
+            line-height: 35px;
+            /* Vertically center text */
             border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            /* Smaller text */
         }
 
         a:hover {
             background: #0056b3;
             color: white;
         }
+
+
 
         table {
             width: 80%;
@@ -77,8 +88,15 @@ $res = $conn->query($sql);
 </head>
 
 <body>
+    
+    <div class="container">
+        <h1>Task Alloted to employees</h1>
+        <a href="assigntask.php">Assign Task</a>
+        <a href="addemployee.php">Add Employee</a>
+        <a href="index.php">Index</a>
+    </div>
+    <br>
 
-    <h1>Task Alloted to employees</h1>
     <table>
         <thead>
             <tr>
@@ -96,7 +114,7 @@ $res = $conn->query($sql);
                         $ids = explode(",", $row['assign_to']);
                         $employee_names = [];
                         // print_r($ids);
-            
+                        // $count = 1;
                         foreach ($ids as $arrs) {
                             // explicte converion 
                             $arrs = intval($arrs);
@@ -112,15 +130,33 @@ $res = $conn->query($sql);
                             if ($result->num_rows > 0) {
                                 while ($names = $result->fetch_assoc()) {
                                     $employee_names[] = $names['employeename'];
+                                    // $employee_names[] = $count . '.' . $names['employeename'];
+                                    // echo $names['employeename'] . "<br><br><br>" ;
+                                    // $count++;
                                 }
+                                // print_r()
+                                // echo count($employee_names ) . "<br>";
                             }
                         }
-                        $employee_names_str = !empty($employee_names) ? implode(", ", $employee_names) : '<span style="color:red;">No Employees Assigned</span>';
+                        $employee_names_str = !empty($employee_names) ? implode("<br>", $employee_names) : '<span style="color:red;">No Employees Assigned</span>';
+                        // var_dump($employee_names_str) . "<br>";
                         echo "<tr>
-                        <td>{$num}</td>
-                        <td>{$row['task_name']}</td>
-                        <td>{$employee_names_str}</td>
-                      </tr>";
+                            <td>{$num}</td>
+                            <td>{$row['task_name']}</td>
+                            <td><ul style=\"list-style-type:number\">";
+
+                        if ($employee_names) {
+                            foreach ($employee_names as $name) {
+                                echo "<li>{$name}</li>";
+                            }
+                        } else {
+                            echo "<li style='color:red;'>No Employees Assigned</li>";
+                        }
+
+                        echo "</ul></td>
+                            </tr>";
+
+
                         $num++;
                     }
                 }
@@ -134,9 +170,7 @@ $res = $conn->query($sql);
     </table>
 
     <br><br>
-    <a href="assigntask.php">Assign Task</a> <br>
-    <a href="addemployee.php">Add Employee</a> <br>
-    <a href="index.php">Index</a>
+
 
     <footer> © Rohit Kumar Sahoo</footer>
 </body>
