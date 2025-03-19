@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_task'])) {
 
 
 
-    $query_str = "INSERT INTO taskassign (task_name, assign_to, status) VALUES ('$task_detail', '$assigned_people', 0)";
+    $query_str = "INSERT INTO taskassign (task_name, assign_to) VALUES ('$task_detail', '$assigned_people')";
 
     if ($conn->query($query_str) === TRUE) {
         echo "<script>alert('Task Assigned Successfully');window.location.href = 'assigntask.php'</script>";
