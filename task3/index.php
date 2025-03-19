@@ -135,7 +135,6 @@ if (isset($_POST['update_status']) && isset($_POST['task_id']) && isset($_POST['
                                 </form>
                             </td>
                         </tr>";
-
                         $num++;
                     }
                 }
