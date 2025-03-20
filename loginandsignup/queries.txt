@@ -1,0 +1,11 @@
+CREATE TABLE academic_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    signup_id INT NOT NULL,  -- Foreign key referencing signup table
+    board ENUM('CBSE', 'ICSE', 'State Board', 'Other') NOT NULL,
+    courses VARCHAR(255) NOT NULL,
+    total_marks INT NOT NULL,
+    secured_marks INT NOT NULL,
+    percentage DECIMAL(5,2) GENERATED ALWAYS AS ((secured_marks / total_marks) * 100) STORED,
+    profile_photo VARCHAR(255), -- Stores file path
+    FOREIGN KEY (signup_id) REFERENCES signup(ID) ON DELETE CASCADE
+);

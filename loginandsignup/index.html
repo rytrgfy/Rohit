@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-
 <body>
-    <h1>
-        welcome to main page where you need to signup and login to your personal dashboard
-    </h1>
-
-    <a href="login.html"> login</a>
-    <a href="signup.html">signup</a>
+    <form action="login.php" method="post">
+        <h1>login</h1>
+        username : <input type="text" name="username" placeholder="enter your username" required>
+        password : <input type="password" name="password" placeholder="your password goes here" required>
+        Login : <input type="submit" name="login" >
+    </form>
+    <a href="signup.php">signup</a>
+    forget password : <button> <a href="forgetpassword.php"> click me</a> </button>
 </body>
-
 </html>
