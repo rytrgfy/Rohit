@@ -233,11 +233,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $('#state').on('change', function () {
                 var stateId = $(this).val();
                 loadDistricts(stateId);
+                console.log(stateId);
             });
 
             $('#district').on('change', function () {
                 var districtId = $(this).val();
                 loadCities(districtId);
+                console.log(districtId);
+            });
+            $('#city').on('change', function () {
+                var cityId = $(this).val();
+                console.log(cityId);
             });
 
             function loadStates() {
@@ -271,6 +277,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     success: function (response) {
                         $('#city').html(response);
                     }
+                    // console.log(city);
                 });
             }
 
