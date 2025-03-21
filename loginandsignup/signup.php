@@ -391,3 +391,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
+
+
+
+<!------------------------------------------------------------------------------------------ 
+this is done on friday state dist and city done 
+data sending to db is still pending and validation of signup page is still pending 
+to be done on monday 
+date 21-05-2025 
+ ---------------------------------------------------------------------------------------------->
