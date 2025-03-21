@@ -84,12 +84,14 @@ if (!$result) {
 </head>
 
 <body>
-    <a href="logout.php"> logout</a>
+
     <div class="container">
+        <a href="logout.php"> logout</a>
         <h2>Listing Page</h2>
         <a href="addstate.php">Add a State</a>
         <a href="addDistict.php">Add a District</a>
         <a href="addDetails.php">Add a City</a> <!-- Added link to add city -->
+        <a href="addboard.php">Add a BOARDS</a> <!-- Added link to add city -->
     </div>
 
     <table>
@@ -138,11 +140,13 @@ if (!$result) {
                                 <?php } ?>
 
                                 <?php if ($first_district) { ?>
-                                    <td rowspan="<?php echo $district_rowspan; ?>"><?php echo !empty($district) ? $district : '<span style="color:red;">N/A</span>'; ?></td>
+                                    <td rowspan="<?php echo $district_rowspan; ?>">
+                                        <?php echo !empty($district) ? $district : '<span style="color:red;">N/A</span>'; ?></td>
                                     <?php $first_district = false; ?>
                                 <?php } ?>
 
-                                <td><?php echo !empty($city['city_name']) ? $city['city_name'] : '<span style="color:red;">No city available</span>'; ?></td>
+                                <td><?php echo !empty($city['city_name']) ? $city['city_name'] : '<span style="color:red;">No city available</span>'; ?>
+                                </td>
                             </tr>
                         <?php } ?>
                     <?php } ?>

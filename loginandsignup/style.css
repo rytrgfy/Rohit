@@ -1,0 +1,154 @@
+.main {
+    width: 80vw;
+    /* Full width */
+    min-height: 100vh;
+    /* Full height */
+    margin: auto;
+    background: #e3eaf3;
+    padding: 30px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h3 {
+    background: #d3dae6;
+    padding: 12px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Grid layout for all sections, ensuring uniformity */
+.form-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    
+}
+
+/* Form group styling */
+.form-group {
+    flex: 1;
+    min-width: 160px;
+    max-width: 220px;
+    /* Compact but aligned */
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Standardized input field sizes */
+input[type="text"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Textarea height matching input fields */
+textarea {
+    resize: none;
+    height: 50px;
+}
+
+/* Ensuring file input aligns properly */
+input[type="file"] {
+    width: auto;
+}
+
+/* Submit button centered */
+.submit-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+input[type="submit"] {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background: #0056b3;
+}
+
+/* Center the login details section */
+.logindetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center horizontally */
+    justify-content: center;
+    /* Center vertically */
+    width: 100%;
+    /* min-height: 100vh; */
+    /* Full height to push it to the middle */
+}
+
+/* Ensure form fields have a proper width */
+.logindetails .form-group {
+    width: 100%;
+    max-width: 350px;
+    /* Adjust width for better alignment */
+    text-align: left;
+    /* Keep labels aligned */
+}
+
+.basicinfodivs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+/* Ensuring Name, Contact, and Address are in the first row */
+.form-group.name,
+.form-group.contact,
+.form-group.address {
+    grid-column: span 1; /* Each takes 1 column */
+}
+
+/* Ensuring State, District, City, and Profile Photo are in the second row */
+.form-group.state,
+.form-group.district,
+.form-group.city,
+.form-group.profilephoto {
+    grid-column: span 1;
+}
+
+/* Adjust Address to take more space */
+.form-group.address {
+    grid-column: span 1;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .basicinfodivs {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .basicinfodivs {
+        grid-template-columns: repeat(1, 1fr); /* Single column on small screens */
+    }
+}
