@@ -394,6 +394,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
+
 <!------------------------------------------------------------------------------------------ 
 this is done on friday state dist and city done 
 data sending to db is still pending and validation of signup page is still pending 
