@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
 
     } else {
-        echo "<script>alert('Login failed! Use correct username or password try signup.');window.location.href = 'index.php';</script>";
+        echo "<script>alert('Login failed! Use correct username or password try signup.');window.location.href = 'index.html';</script>";
         exit();
     }
 

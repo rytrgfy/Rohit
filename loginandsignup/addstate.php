@@ -8,7 +8,8 @@ if (!isset($_SESSION['user_id'])) {
     header("Location:  404.php");
     
     exit();
-}
+}  
+//  cnc
 
 $sql_get_state = "SELECT * FROM state ORDER BY id ASC";
 $res = $conn->query($sql_get_state);

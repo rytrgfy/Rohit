@@ -1,10 +1,26 @@
 <?php
 include "dbconn.php";
 
+
+
+// $state_id = $_POST['stateId'];
+// echo $state_id;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $contact = $_POST["contact"];
     $address = $_POST["address"];
+    $state_id = isset($_POST["state_id"]) ? $_POST["state_id"] : 0;
+    $district_id = isset($_POST["district_id"]) ? $_POST["district_id"] : 0;
+    $city_id = isset($_POST["city_id"]) ? $_POST["city_id"] : 0;
+
+    // echo "State ID: " . $state_id . "<br>";
+    // echo "District ID: " . $district_id . "<br>";
+    // echo "City ID: " . $city_id . "<br>";
+    // exit();
+
+
+
+
 
     $profile_photo = '';
 
@@ -37,8 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Insert into signup table
-    $insert_sql = "INSERT INTO signup (name, contact, address, profile_photo, username, password) 
-                   VALUES ('$name', '$contact', '$address', '$profile_photo', '$username', '$password')";
+    $insert_sql = "INSERT INTO signup (name, contact, address, profile_photo, state, dist, city, username, password) 
+               VALUES ('$name', '$contact', '$address', '$profile_photo', '$state_id', '$district_id', '$city_id', '$username', '$password')";
+
 
     if ($conn->query($insert_sql) === TRUE) {
         $last_insert_id = $conn->insert_id;
@@ -81,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        echo "<script>alert('Data submitted successfully');window.location.href='index.html';</script>";
+        // echo "<script>alert('Data submitted successfully');window.location.href='index.html';</script>";
     } else {
         echo $conn->error;
     }
@@ -102,12 +119,261 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Global Styles and Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f8fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Main Container */
+        .main {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Sections */
+        form h3 {
+            padding: 10px 0;
+            margin: 20px 0 15px;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            position: relative;
+        }
+
+        /* Basic Info Layout */
+        .basicinfodivs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        /* Academic Details */
+        #academic-container {
+            margin-bottom: 20px;
+        }
+
+        .academic-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Input Styles */
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* File Inputs */
+        input[type="file"] {
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            width: 100%;
+        }
+
+        input[type="file"]:hover {
+            background-color: #eef2f7;
+        }
+
+        /* Login Details Section */
+        .logindetails {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Buttons */
+        #add-academic {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            margin: 10px 0 20px;
+            display: block;
+            line-height: 40px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            right: 200px;
+            position: absolute;
+        }
+
+        #add-academic:hover {
+            background-color: #2ecc71;
+            transform: scale(1.05);
+        }
+
+        .remove-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Submit Button */
+        .submit-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Readonly fields */
+        input[readonly] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main {
+                padding: 15px;
+                margin: 15px;
+            }
+
+            .basicinfodivs {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            input[type="submit"] {
+                width: 100%;
+            }
+        }
+
+        /* Animations for smoother UX */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .academic-section {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Additional Styling */
+        .percentage-field {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* Validation Styles */
+        input:invalid {
+            border-color: #e74c3c;
+        }
+
+        /* Optional: Custom Checkbox and Radio Styles */
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        /* Make placeholder text lighter */
+        ::placeholder {
+            color: #aaa;
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
     <div class="main">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form id="signupForm" action="" method="post" enctype="multipart/form-data">
             <div class="basicinfo">
                 <h3>Basic Info</h3>
                 <div class="basicinfodivs">
@@ -128,21 +394,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="form-group state ">
                         <label>Select State:</label>
-                        <select name="state" id="state">
+                        <select name="state" id="stateId">
                             <option>-- Select State --</option>
                         </select>
                     </div>
 
                     <div class="form-group district ">
                         <label>Select District:</label>
-                        <select name="district" id="district">
+                        <select name="district" id="district_id">
                             <option>-- Select District --</option>
                         </select>
                     </div>
 
                     <div class="form-group city ">
                         <label>Select City:</label>
-                        <select name="city" id="city">
+                        <select name="city" id="city_id">
                             <option>-- Select City --</option>
                         </select>
                     </div>
@@ -155,6 +421,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <h3>Academic Details</h3>
+            <button type="button" id="add-academic">+</button>
             <div id="academic-container">
                 <div class="academic-section">
                     <div class="form-grid">
@@ -197,7 +464,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
-            <button type="button" id="add-academic">Add Another Academic Detail</button>
+
 
             <h3>Login Details</h3>
             <div class="logindetails">
@@ -230,20 +497,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Load states on page load
             loadStates();
 
-            $('#state').on('change', function () {
+            $('#stateId').on('change', function () {
                 var stateId = $(this).val();
                 loadDistricts(stateId);
-                console.log(stateId);
+                console.log("State changed:", stateId);
             });
 
-            $('#district').on('change', function () {
+            $('#district_id').on('change', function () {
                 var districtId = $(this).val();
                 loadCities(districtId);
-                console.log(districtId);
+                console.log("District changed:", districtId);
             });
-            $('#city').on('change', function () {
+
+            $('#city_id').on('change', function () {
                 var cityId = $(this).val();
-                console.log(cityId);
+                console.log("City changed:", cityId);
             });
 
             function loadStates() {
@@ -252,7 +520,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     type: 'POST',
                     data: { type: 'state' },
                     success: function (response) {
-                        $('#state').html(response);
+                        $('#stateId').html(response);
                     }
                 });
             }
@@ -263,8 +531,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     type: 'POST',
                     data: { type: 'district', id: stateId },
                     success: function (response) {
-                        $('#district').html(response);
-                        $('#city').html('<option value="">Select City</option>'); // Clear city dropdown
+                        $('#district_id').html(response);
+                        $('#city_id').html('<option>-- Select City --</option>');
                     }
                 });
             }
@@ -275,11 +543,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     type: 'POST',
                     data: { type: 'city', id: districtId },
                     success: function (response) {
-                        $('#city').html(response);
+                        $('#city_id').html(response);
                     }
-                    // console.log(city);
                 });
             }
+
+            // Fix: Form submission
+            $('#signupForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                let formData = new FormData(this);
+
+                // Append state, district, and city IDs
+                formData.append("state_id", $("#stateId").val());
+                formData.append("district_id", $("#district_id").val());
+                formData.append("city_id", $("#city_id").val());
+
+                $.ajax({
+                    url: "signup.php", // Use a separate processing file
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log("Response from PHP:", response);
+                        if (response.includes("successfully")) {
+                            alert("form submit successfully"); // Display response to user
+                            window.location.href = 'index.html'; // Redirect on success
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                        alert("Error submitting form: " + error);
+                    }
+                });
+            });
 
             let sectionCount = $('.academic-section').length; // Start counting from existing sections
             let selectedBoards = [];

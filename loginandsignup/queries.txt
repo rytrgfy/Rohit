@@ -9,3 +9,15 @@ CREATE TABLE academic_details (
     profile_photo VARCHAR(255), -- Stores file path
     FOREIGN KEY (signup_id) REFERENCES signup(ID) ON DELETE CASCADE
 );
+
+
+
+// retriving data querry
+
+
+SELECT signup.name, signup.contact, signup.address, signup.profile_photo, state.state_name, district.district_name, city.city_name, academic_details.board, academic_details.courses, academic_details.total_marks, academic_details.secured_marks, academic_details.percentage, academic_details.profile_photo 
+FROM signup 
+JOIN academic_details ON signup.id = academic_details.signup_id 
+JOIN State ON signup.State = State.id 
+JOIN district ON signup.dist = district.id 
+JOIN city ON signup.city = city.id;
