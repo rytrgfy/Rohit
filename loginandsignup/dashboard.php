@@ -1,5 +1,6 @@
-<?php session_start();
+<?php
 include "dbconn.php"; // Start session
+session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.html");
     exit();

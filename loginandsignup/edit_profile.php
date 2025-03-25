@@ -42,6 +42,11 @@ if (!$result) {
 }
 $data = $result->fetch_assoc();
 
+$academicData = [];
+while ($row = $result->fetch_assoc()) {
+    $academicData[] = $row;
+}
+
 // echo $data['name'];
 // echo $data['contact'];
 // echo $data['address'];
@@ -52,7 +57,7 @@ $data = $result->fetch_assoc();
 // echo $data['state_name'];
 // echo $data['district_name'];
 // echo $data['city_name'];
-echo $data['board_name'];
+// echo $data['board_name'];
 // echo $data['courses'];
 // echo $data['total_marks'];
 // echo $data['secured_marks'];
@@ -84,6 +89,7 @@ echo $data['board_name'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
     <style>
         /* Global Styles and Reset */
         * {
@@ -383,7 +389,15 @@ echo $data['board_name'];
 
                     <div class="form-group profilephoto">
                         <label>Profile Photo:</label>
-                        <input type="file" name="profile_photo" accept="image/*">
+                        <input type="file" name="profile_photo" id="profilePhotoInput" accept="image/*">
+
+                        <!-- Display previously uploaded image -->
+                        <div id="profilePhotoPreview">
+                            <?php if (!empty($data['profile_photo'])): ?>
+                                <img src="photos/<?php echo $data['profile_photo']; ?>" id="profileImage"
+                                    alt="Profile Photo" width="100">
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -391,46 +405,77 @@ echo $data['board_name'];
             <h3>Academic Details</h3>
             <button type="button" id="add-academic">+</button>
             <div id="academic-container">
-                <div class="academic-section">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Board:</label>
-                            <select name="academic[0][board]" class="board-select">
-                            </select>
-                        </div>
+                <?php foreach ($academicData as $index => $data): ?>
+                    <div class="academic-section">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Board:</label>
+                                <select name="academic[<?php echo $index; ?>][board]" class="board-select">
+                                    <option value="<?php echo $data['board']; ?>"><?php echo $data['board_name']; ?>
+                                    </option>
+                                </select>
+                            </div>
 
-                        <div class="form-group">
-                            <label>Courses:</label>
-                            <input type="text" name="academic[0][courses]" class="courses-input"
-                                placeholder="Enter your courses">
-                        </div>
+                            <div class="form-group">
+                                <label>Courses:</label>
+                                <input type="text" name="academic[<?php echo $index; ?>][courses]" class="courses-input"
+                                    value="<?php echo $data['courses']; ?>" placeholder="Enter your courses">
+                            </div>
 
-                        <div class="form-group">
-                            <label>Total Marks:</label>
-                            <input type="number" name="academic[0][total_marks]" class="total-marks"
-                                placeholder="Enter total marks">
-                        </div>
+                            <div class="form-group">
+                                <label>Total Marks:</label>
+                                <input type="number" name="academic[<?php echo $index; ?>][total_marks]" class="total-marks"
+                                    value="<?php echo $data['total_marks']; ?>" placeholder="Enter total marks">
+                            </div>
 
-                        <div class="form-group">
-                            <label>Marks Secured:</label>
-                            <input type="number" name="academic[0][secured_marks]" class="secured-marks"
-                                placeholder="Enter marks secured">
-                        </div>
+                            <div class="form-group">
+                                <label>Marks Secured:</label>
+                                <input type="number" name="academic[<?php echo $index; ?>][secured_marks]"
+                                    class="secured-marks" value="<?php echo $data['secured_marks']; ?>"
+                                    placeholder="Enter marks secured">
+                            </div>
 
-                        <div class="form-group">
-                            <label>Percentage:</label>
-                            <input type="text" name="academic[0][percentage]" class="percentage-field" readonly>
-                        </div>
+                            <div class="form-group">
+                                <label>Percentage:</label>
+                                <input type="text" name="academic[<?php echo $index; ?>][percentage]"
+                                    class="percentage-field" readonly value="<?php echo $data['percentage']; ?>">
+                            </div>
 
-                        <div class="form-group">
-                            <label>Reference Files:</label>
-                            <input type="file" name="reference_files[0][]" multiple>
+                            <!-- Reference Files Section -->
+                            <div class="form-group">
+                                <label>Reference Files:</label>
+                                <input type="file" name="reference_files[<?php echo $index; ?>][]" multiple>
+
+                                <?php
+                                // Store previous reference files in a hidden input
+                                if (!empty($data['reference_file'])) {
+                                    echo "<input type='hidden' name='prev_reference_files' value='" . htmlspecialchars($data['reference_file']) . "'>";
+                                }
+                                ?>
+
+                                <div class="reference-file-preview">
+                                    <?php
+                                    if (!empty($data['reference_file'])) {
+                                        $files = explode(',', $data['reference_file']);
+                                        foreach ($files as $file) {
+                                            $filePath = "file_uploads_data/" . htmlspecialchars($file);
+                                            echo "<img src='$filePath' alt='Reference File' style='max-width: 100px; max-height: 100px; border-radius: 10px; margin-right: 5px;'>";
+                                            // Uncomment below to display file name as a clickable link
+                                            echo "<br><a href='$filePath' target='_blank'>" . htmlspecialchars($file) . "</a><br>";
+                                        }
+                                    } else {
+                                        echo "<p>No reference files uploaded.</p>";
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
-
-                    <button type="button" class="remove-btn" style="display:none;">Remove</button>
-                </div>
+                <?php endforeach; ?>
             </div>
+
 
             <h3>Login Details</h3>
             <div class="logindetails">
