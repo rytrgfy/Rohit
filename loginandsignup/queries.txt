@@ -21,3 +21,22 @@ JOIN academic_details ON signup.id = academic_details.signup_id
 JOIN State ON signup.State = State.id 
 JOIN district ON signup.dist = district.id 
 JOIN city ON signup.city = city.id;
+
+
+
+
+
+ // Fetch user data with full joins
+    $fetch_data_sql = "SELECT 
+        signup.id AS signup_id, 
+        state.state_name AS state_name, 
+        district.district_name AS district_name, 
+        city.city_name AS city_name,
+        state.id AS state_id,
+        district.id AS district_id,
+        city.id AS city_id
+    FROM signup 
+    JOIN state ON signup.State = state.id 
+    JOIN district ON signup.dist = district.id 
+    JOIN city ON signup.city = city.id 
+    WHERE signup.id = $id";
