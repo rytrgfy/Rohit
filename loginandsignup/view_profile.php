@@ -2,35 +2,60 @@
 $id = $_GET['id'];
 include 'dbconn.php';
 session_start();
-// if (!isset($_SESSION['user_id'])) {
-//     header("Location: index.html");
-//     exit();
-// }
 
-if($_SESSION['user_id'] != $id){
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != $id) {
     header("Location: index.html");
     exit();
 }
 
-$fetch_data_sql = "SELECT signup.name, signup.contact, signup.address, signup.profile_photo, state.state_name, district.district_name, city.city_name, academic_details.board, academic_details.courses, academic_details.total_marks, academic_details.secured_marks, academic_details.percentage, academic_details.reference_file FROM signup JOIN academic_details ON signup.id = academic_details.signup_id JOIN State ON signup.State = State.id JOIN district ON signup.dist = district.id JOIN city ON signup.city = city.id WHERE signup.id = $id";
+$fetch_data_sql = "SELECT 
+    signup.name, 
+    signup.contact, 
+    signup.address, 
+    signup.profile_photo, 
+    state.state_name, 
+    district.district_name, 
+    city.city_name, 
+    boards.board_name,  
+    academic_details.courses, 
+    academic_details.total_marks, 
+    academic_details.secured_marks, 
+    academic_details.percentage, 
+    academic_details.reference_file,
+    academic_details.board as board_id
+FROM signup 
+JOIN academic_details ON signup.id = academic_details.signup_id 
+JOIN boards ON academic_details.board = boards.id  
+JOIN state ON signup.state = state.id 
+JOIN district ON signup.dist = district.id 
+JOIN city ON signup.city = city.id 
+WHERE signup.id = $id";
+
 $result = $conn->query($fetch_data_sql);
 if (!$result) {
-    die("Query failed: " . $conn->error);
+    die("Query failed: {$conn->error}");
 }
-$data = $result->fetch_assoc();
-// print_r($data);
-// echo "<pre>";
 
+// Check if any records exist
+if ($result->num_rows == 0) {
+    echo "No user data found.";
+    exit();
+}
 
-// // echo $rowcount;
-// print_r($rowcount);
-// // exit();
-
+// Fetch the first record
 $first_record = $result->fetch_assoc();
-// Reset the pointer to get all academic records again
-$result->data_seek(0);
+
+// Ensure default values if any fields are null
+$first_record = array_map(function ($value) {
+    return $value === null ? 'N/A' : $value;
+}, $first_record);
+
 
 ?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -291,116 +316,132 @@ $result->data_seek(0);
     </style>
 </head>
 
+
+
 <body>
+    <div class="container">
+        <header>
+            <h1>Student Profile</h1>
+            <div class="nav-links">
+                <a href="dashboard.php">Dashboard</a>
+                <a href="logout.php">Logout</a>
+            </div>
+            <div>
+                <a href="edit_profile.php?id=<?php echo $id; ?>" style="text-decoration: none;">
+                    <button
+                        style="background-color: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </a>
+            </div>
+        </header>
 
-    <body>
-        <div class="container">
-            <header>
-                <h1>Student Profile</h1> 
-                <div class="nav-links">
-                    <a href="dashboard.php">Dashboard</a>
-                    <a href="logout.php">Logout</a>
-                </div>
-                <div>
-                    <a href="edit_profile.php?id=<?php echo $id; ?>" style="text-decoration: none;">
-                        <button
-                            style="background-color: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
-                            <i class="fas fa-edit"></i> Edit Profile
-                        </button>
-                </div>
-            </header>
-
-            <div class="profile-container">
-                <div class="profile-sidebar">
-                    <img src="photos/<?php echo $first_record['profile_photo']; ?>" alt="Profile Photo"
-                        class="profile-image">
-                    <div class="profile-info">
-                        <h2><?php echo $first_record['name']; ?></h2>
-                        <div class="profile-location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span><?php echo $first_record['city_name']; ?>,
-                                <?php echo $first_record['state_name']; ?></span>
-                        </div>
-                    </div>
-
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <span><?php echo $first_record['contact']; ?></span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marked-alt"></i>
-                            <span><?php echo $first_record['address']; ?></span>
-                        </div>
-                        <div class="contact-item">
-                            <i class="fas fa-city"></i>
-                            <span><?php echo $first_record['district_name']; ?> /
-                                <?php echo $first_record['city_name']; ?></span>
-                        </div>
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <img src="photos/<?php echo htmlspecialchars($first_record['profile_photo'] ?? 'default.jpg'); ?>"
+                    alt="Profile Photo" class="profile-image">
+                <div class="profile-info">
+                    <h2><?php echo htmlspecialchars($first_record['name'] ?? 'N/A'); ?></h2>
+                    <div class="profile-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><?php
+                        echo htmlspecialchars($first_record['city_name'] ?? 'N/A'); ?>,
+                            <?php echo htmlspecialchars($first_record['state_name'] ?? 'N/A'); ?>
+                        </span>
                     </div>
                 </div>
 
-                <div class="main-content">
-                    <?php
-                    // Loop through all academic records
-                    while ($row = $result->fetch_assoc()) {
-                        ?>
-                        <div class="card">
-                            <div class="card-header">
-                                <i class="fas fa-graduation-cap"></i>
-                                <h2>Academic Details</h2>
-                            </div>
-
-                            <div class="academic-info">
-                                <div class="info-item">
-                                    <label>Board</label>
-                                    <p><?php echo $row['board']; ?></p>
-                                </div>
-
-                                <div class="info-item">
-                                    <label>Course</label>
-                                    <p><?php echo $row['courses']; ?></p>
-                                </div>
-                            </div>
-
-                            <div class="marks-container">
-                                <label>Performance</label>
-                                <div class="progress-container">
-                                    <div class="progress-bar" style="width: <?php echo $row['percentage']; ?>%">
-                                        <?php echo $row['percentage']; ?>%
-                                    </div>
-                                </div>
-
-                                <div class="marks-details">
-                                    <span>Secured: <strong><?php echo $row['secured_marks']; ?></strong></span>
-                                    <span>Total: <strong><?php echo $row['total_marks']; ?></strong></span>
-                                </div>
-
-                                <?php if ($row['reference_file']): ?>
-                                    <a href="file_uploads_data/<?php echo $row['reference_file']; ?>" class="document-link"
-                                        target="_blank">
-                                        <i class="fas fa-file-alt"></i> View Academic Documents
-                                    </a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php } ?>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span><?php echo htmlspecialchars($first_record['contact'] ?? 'N/A'); ?></span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span><?php echo htmlspecialchars($first_record['address'] ?? 'N/A'); ?></span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-city"></i>
+                        <span><?php
+                        echo htmlspecialchars($first_record['district_name'] ?? 'N/A'); ?> /
+                            <?php echo htmlspecialchars($first_record['city_name'] ?? 'N/A'); ?>
+                        </span>
+                    </div>
                 </div>
             </div>
+
+            <div class="main-content">
+                <?php
+                // Reset the pointer to get all academic records
+                $result->data_seek(0);
+
+                // Loop through all academic records
+                while ($row = $result->fetch_assoc()) {
+                    // Ensure default values
+                    $row = array_map(function ($value) {
+                        return $value === null ? 'N/A' : $value;
+                    }, $row);
+                    ?>
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h2>Academic Details</h2>
+                        </div>
+
+                        <div class="academic-info">
+                            <div class="info-item">
+                                <label>Board</label>
+                                <p><?php echo htmlspecialchars($row['board_name'] ?? 'N/A'); ?></p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Course</label>
+                                <p><?php echo htmlspecialchars($row['courses'] ?? 'N/A'); ?></p>
+                            </div>
+                        </div>
+
+                        <div class="marks-container">
+                            <label>Performance</label>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: <?php echo floatval($row['percentage'] ?? 0); ?>%">
+                                    <?php echo floatval($row['percentage'] ?? 0); ?>%
+                                </div>
+                            </div>
+
+                            <div class="marks-details">
+                                <span>Secured:
+                                    <strong><?php echo htmlspecialchars($row['secured_marks'] ?? 'N/A'); ?></strong></span>
+                                <span>Total:
+                                    <strong><?php echo htmlspecialchars($row['total_marks'] ?? 'N/A'); ?></strong></span>
+                            </div>
+
+                            <?php if (!empty($row['reference_file'])): ?>
+                                <a href="file_uploads_data/<?php echo htmlspecialchars($row['reference_file']); ?>"
+                                    class="document-link" target="_blank">
+                                    <i class="fas fa-file-alt"></i> View Academic Documents
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
         </div>
+    </div>
 
-        <script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const securedMarks = <?php echo floatval($first_record['secured_marks'] ?? 0); ?>;
+            const totalMarks = <?php echo floatval($first_record['total_marks'] ?? 0); ?>;
+            const percentage = totalMarks > 0 ? (securedMarks / totalMarks) * 100 : 0;
 
-            document.addEventListener('DOMContentLoaded', function () {
-                const securedMarks = <?php echo $data['secured_marks']; ?>;
-                const totalMarks = <?php echo $data['total_marks']; ?>;
-                const percentage = (securedMarks / totalMarks) * 100;
-
-                document.querySelector('.progress-bar').style.width = percentage + '%';
-                document.querySelector('.progress-bar').textContent = percentage.toFixed(2) + '%';
-            });
-        </script>
-    </body>
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                progressBar.style.width = percentage.toFixed(2) + '%';
+                progressBar.textContent = percentage.toFixed(2) + '%';
+            }
+        });
+    </script>
+</body>
 
 </html>
 <!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------

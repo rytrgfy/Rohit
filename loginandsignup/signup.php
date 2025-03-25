@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Process academic details dynamically
         if (isset($_POST['academic']) && is_array($_POST['academic'])) {
             foreach ($_POST['academic'] as $key => $academic) {
-                $board = ucwords(strtolower($academic["board"]));
+                $board = $academic["board"];
                 $courses = $academic["courses"];
                 $total_marks = $academic["total_marks"];
                 $secured_marks = $academic["secured_marks"];

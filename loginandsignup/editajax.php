@@ -105,18 +105,11 @@ if ($type == "academic") {
 // Fetch board dropdown options
 
 if ($type == "board") {
-    // Fetch the previously selected board for the user
-    $userBoardQuery = "SELECT board_name FROM boards WHERE id = (SELECT board_id FROM signup WHERE id = $id)";
-    $userBoardResult = $conn->query($userBoardQuery);
-
-    $selectedBoard = '';
-    if ($userBoardResult && $userBoardResult->num_rows > 0) {
-        $selectedBoardRow = $userBoardResult->fetch_assoc();
-        $selectedBoard = $selectedBoardRow['board_name'];
-    }
+    // Fetch the previously selected board
+    $selectedBoard = isset($_POST['selectedBoard']) ? $_POST['selectedBoard'] : '';
 
     // Fetch all boards for the dropdown
-    $sql = "SELECT board_name FROM boards ORDER BY board_name ASC";
+    $sql = "SELECT id, board_name FROM boards ORDER BY board_name ASC";
     $query = $conn->query($sql);
 
     if (!$query) {
@@ -125,10 +118,11 @@ if ($type == "board") {
 
     echo "<option value=''>-- Select Board --</option>";
     while ($row = $query->fetch_assoc()) {
-        $selected = ($row['board_name'] == $selectedBoard) ? 'selected' : '';
-        echo "<option value='{$row['board_name']}' $selected>{$row['board_name']}</option>";
+        $selected = ($row['id'] == $selectedBoard) ? 'selected' : ''; // Compare ID, not name
+        echo "<option value='{$row['id']}' $selected>{$row['board_name']}</option>";
     }
     exit;
 }
+
 
 ?>

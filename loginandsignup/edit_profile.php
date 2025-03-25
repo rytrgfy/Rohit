@@ -21,6 +21,7 @@ $fetch_data_sql = "SELECT
     district.district_name, 
     city.id AS city_id, 
     city.city_name, 
+    boards.board_name,
     academic_details.board, 
     academic_details.courses, 
     academic_details.total_marks, 
@@ -29,6 +30,7 @@ $fetch_data_sql = "SELECT
     academic_details.reference_file 
 FROM signup 
 JOIN academic_details ON signup.id = academic_details.signup_id 
+JOIN boards ON academic_details.board = boards.id  
 JOIN state ON signup.state = state.id 
 JOIN district ON signup.dist = district.id 
 JOIN city ON signup.city = city.id 
@@ -50,12 +52,12 @@ $data = $result->fetch_assoc();
 // echo $data['state_name'];
 // echo $data['district_name'];
 // echo $data['city_name'];
-// echo $data['board'];
+echo $data['board_name'];
 // echo $data['courses'];
 // echo $data['total_marks'];
 // echo $data['secured_marks'];
 // echo $data['percentage'];
-echo $data['reference_file'];
+// echo $data['reference_file'];
 
 
 
@@ -543,47 +545,47 @@ echo $data['reference_file'];
             // Function to add an academic row dynamically
             function addAcademicRow(index, data = {}) {
                 let row = `
-                <div class="academic-section">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Board:</label>
-                            <select name="academic[${index}][board]" class="board-select">
-                                <option value="">Loading...</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Courses:</label>
-                            <input type="text" name="academic[${index}][courses]" class="courses-input"
-                                value="${data.courses || ''}" placeholder="Enter your courses">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Total Marks:</label>
-                            <input type="number" name="academic[${index}][total_marks]" class="total-marks"
-                                value="${data.total_marks || ''}" placeholder="Enter total marks">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Marks Secured:</label>
-                            <input type="number" name="academic[${index}][secured_marks]" class="secured-marks"
-                                value="${data.secured_marks || ''}" placeholder="Enter marks secured">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Percentage:</label>
-                            <input type="text" name="academic[${index}][percentage]" class="percentage-field" readonly
-                                value="${data.percentage || ''}">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Reference Files:</label>
-                            <input type="file" name="reference_files[${index}][]" multiple>
-                        </div>
-                    </div>
-                    <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button>
+        <div class="academic-section">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Board:</label>
+                    <select name="academic[${index}][board]" class="board-select" id="board-${index}">
+                        <option value="">Loading...</option>
+                    </select>
                 </div>
-            `;
+
+                <div class="form-group">
+                    <label>Courses:</label>
+                    <input type="text" name="academic[${index}][courses]" class="courses-input"
+                        value="${data.courses || ''}" placeholder="Enter your courses">
+                </div>
+
+                <div class="form-group">
+                    <label>Total Marks:</label>
+                    <input type="number" name="academic[${index}][total_marks]" class="total-marks"
+                        value="${data.total_marks || ''}" placeholder="Enter total marks">
+                </div>
+
+                <div class="form-group">
+                    <label>Marks Secured:</label>
+                    <input type="number" name="academic[${index}][secured_marks]" class="secured-marks"
+                        value="${data.secured_marks || ''}" placeholder="Enter marks secured">
+                </div>
+
+                <div class="form-group">
+                    <label>Percentage:</label>
+                    <input type="text" name="academic[${index}][percentage]" class="percentage-field" readonly
+                        value="${data.percentage || ''}">
+                </div>
+
+                <div class="form-group">
+                    <label>Reference Files:</label>
+                    <input type="file" name="reference_files[${index}][]" multiple>
+                </div>
+            </div>
+            <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button>
+        </div>
+        `;
                 $('#academic-container').append(row);
                 loadBoards(index, data.board);
             }
@@ -595,9 +597,10 @@ echo $data['reference_file'];
                     type: 'POST',
                     data: { type: 'board' },
                     success: function (response) {
-                        $(`select[name="academic[${index}][board]"]`).html(response);
+                        let boardDropdown = $(`#board-${index}`);
+                        boardDropdown.html(response);
                         if (selectedBoard) {
-                            $(`select[name="academic[${index}][board]"]`).val(selectedBoard);
+                            boardDropdown.val(selectedBoard);
                         }
                     }
                 });
@@ -615,6 +618,7 @@ echo $data['reference_file'];
             });
 
         });
+
     </script>
 
 
