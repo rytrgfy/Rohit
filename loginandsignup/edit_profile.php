@@ -42,10 +42,10 @@ if (!$result) {
 }
 $data = $result->fetch_assoc();
 
-$academicData = [];
-while ($row = $result->fetch_assoc()) {
-    $academicData[] = $row;
-}
+// $academicData = [];
+// while ($row = $result->fetch_assoc()) {
+//     $academicData[] = $row;
+// }
 
 // echo $data['name'];
 // echo $data['contact'];
@@ -402,79 +402,118 @@ while ($row = $result->fetch_assoc()) {
                 </div>
             </div>
 
+
+
+            <?php
+            // Execute the query to fetch academic details
+            $academicRecordsQuery = "SELECT
+    academic_details.id AS academicRecordId,
+    academic_details.board AS boardId,
+    boards.board_name AS boardName,
+    academic_details.courses AS courseName,
+    academic_details.total_marks AS totalMarks,
+    academic_details.secured_marks AS securedMarks,
+    academic_details.percentage AS percentageScore,
+    academic_details.reference_file AS referenceFiles
+FROM academic_details
+JOIN boards ON academic_details.board = boards.id
+WHERE academic_details.signup_id = $id";
+
+            $academicRecordsResult = $conn->query($academicRecordsQuery);
+
+            if (!$academicRecordsResult) {
+                die("Query failed: " . $conn->error);
+            }
+
+            // Fetch academic data
+            $academicRecords = [];
+            if ($academicRecordsResult->num_rows > 0) {
+                while ($academicRecord = $academicRecordsResult->fetch_assoc()) {
+                    $academicRecords[] = $academicRecord;
+                }
+            }
+            ?>
+
             <h3>Academic Details</h3>
             <button type="button" id="add-academic">+</button>
-            <div id="academic-container">
-                <?php foreach ($academicData as $index => $data): ?>
-                    <div class="academic-section">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Board:</label>
-                                <select name="academic[<?php echo $index; ?>][board]" class="board-select">
-                                    <option value="<?php echo $data['board']; ?>"><?php echo $data['board_name']; ?>
-                                    </option>
-                                </select>
-                            </div>
 
-                            <div class="form-group">
-                                <label>Courses:</label>
-                                <input type="text" name="academic[<?php echo $index; ?>][courses]" class="courses-input"
-                                    value="<?php echo $data['courses']; ?>" placeholder="Enter your courses">
-                            </div>
+            <div id="academic-details-container">
+                <?php
+                $academicIndex = 0;
+                if (count($academicRecords) > 0):
+                    foreach ($academicRecords as $record):
+                        ?>
+                        <div class="academic-container">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Board:</label>
+                                    <select name="academic[<?php echo $academicIndex; ?>][boardId]" class="board-select"
+                                        id="board-<?php echo $academicIndex; ?>">
+                                        <option value="<?php echo $record['boardId']; ?>"><?php echo $record['boardName']; ?>
+                                        </option>
+                                    </select>
+                                </div>
 
-                            <div class="form-group">
-                                <label>Total Marks:</label>
-                                <input type="number" name="academic[<?php echo $index; ?>][total_marks]" class="total-marks"
-                                    value="<?php echo $data['total_marks']; ?>" placeholder="Enter total marks">
-                            </div>
+                                <div class="form-group">
+                                    <label>Courses:</label>
+                                    <input type="text" name="academic[<?php echo $academicIndex; ?>][courseName]"
+                                        value="<?php echo $record['courseName']; ?>">
+                                </div>
 
-                            <div class="form-group">
-                                <label>Marks Secured:</label>
-                                <input type="number" name="academic[<?php echo $index; ?>][secured_marks]"
-                                    class="secured-marks" value="<?php echo $data['secured_marks']; ?>"
-                                    placeholder="Enter marks secured">
-                            </div>
+                                <div class="form-group">
+                                    <label>Total Marks:</label>
+                                    <input type="number" name="academic[<?php echo $academicIndex; ?>][totalMarks]"
+                                        value="<?php echo $record['totalMarks']; ?>">
+                                </div>
 
-                            <div class="form-group">
-                                <label>Percentage:</label>
-                                <input type="text" name="academic[<?php echo $index; ?>][percentage]"
-                                    class="percentage-field" readonly value="<?php echo $data['percentage']; ?>">
-                            </div>
+                                <div class="form-group">
+                                    <label>Marks Secured:</label>
+                                    <input type="number" name="academic[<?php echo $academicIndex; ?>][securedMarks]"
+                                        value="<?php echo $record['securedMarks']; ?>">
+                                </div>
 
-                            <!-- Reference Files Section -->
-                            <div class="form-group">
-                                <label>Reference Files:</label>
-                                <input type="file" name="reference_files[<?php echo $index; ?>][]" multiple>
+                                <div class="form-group">
+                                    <label>Percentage:</label>
+                                    <input type="text" name="academic[<?php echo $academicIndex; ?>][percentageScore]" readonly
+                                        value="<?php echo $record['percentageScore']; ?>">
+                                </div>
 
-                                <?php
-                                // Store previous reference files in a hidden input
-                                if (!empty($data['reference_file'])) {
-                                    echo "<input type='hidden' name='prev_reference_files' value='" . htmlspecialchars($data['reference_file']) . "'>";
-                                }
-                                ?>
 
-                                <div class="reference-file-preview">
-                                    <?php
-                                    if (!empty($data['reference_file'])) {
-                                        $files = explode(',', $data['reference_file']);
-                                        foreach ($files as $file) {
-                                            $filePath = "file_uploads_data/" . htmlspecialchars($file);
-                                            echo "<img src='$filePath' alt='Reference File' style='max-width: 100px; max-height: 100px; border-radius: 10px; margin-right: 5px;'>";
-                                            // Uncomment below to display file name as a clickable link
-                                            echo "<br><a href='$filePath' target='_blank'>" . htmlspecialchars($file) . "</a><br>";
-                                        }
-                                    } else {
-                                        echo "<p>No reference files uploaded.</p>";
-                                    }
-                                    ?>
+                                <div class="form-group">
+                                    <label>Reference Files:</label>
+                                    <input type="file" name="referenceFiles[<?php echo $academicIndex; ?>][]" multiple>
+                                    <?php if (!empty($record['referenceFiles'])): ?>
+                                        <input type='hidden' name='previousReferenceFiles[<?php echo $academicIndex; ?>]'
+                                            value='<?php echo htmlspecialchars($record['referenceFiles']); ?>'>
+                                        <div class="reference-file-preview">
+                                            <?php
+                                            $fileList = explode(',', $record['referenceFiles']);
+                                            foreach ($fileList as $fileItem):
+                                                $fileLocation = "file_uploads_data/" . htmlspecialchars($fileItem);
+                                                ?>
+                                                <img src="<?php echo $fileLocation; ?>" alt="Reference File">
+                                                <br><a href="<?php echo $fileLocation; ?>"
+                                                    target="_blank"><?php echo htmlspecialchars($fileItem); ?></a><br>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <p>No reference files uploaded.</p>
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
-
+                            <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                        <?php
+                        $academicIndex++;
+                    endforeach;
+                else:
+                    echo "<p>No academic details available. Click + to add.</p>";
+                endif;
+                ?>
             </div>
+
+
 
 
             <h3>Login Details</h3>
@@ -570,100 +609,279 @@ while ($row = $result->fetch_assoc()) {
                     }
                 });
             }
+            $(document).ready(function () {
+                loadAcademicDetails(); // Load academic details on page load
 
-            // Load academic details dynamically
-            function loadAcademicDetails() {
-                $.ajax({
-                    url: 'editajax.php',
-                    type: 'POST',
-                    data: { type: 'academic' },
-                    dataType: 'json',
-                    success: function (response) {
-                        $('#academic-container').html(""); // Clear existing
-                        response.forEach((data, index) => {
-                            addAcademicRow(index, data);
-                        });
-                    }
-                });
-            }
+                // Function to load academic details
+                function loadAcademicDetails() {
+                    $.ajax({
+                        url: 'editajax.php',
+                        type: 'POST',
+                        data: { type: 'academic' },
+                        dataType: 'json',
+                        success: function (response) {
+                            $('#academic-details-container').html(""); // Clear existing content
+                            response.forEach((data, index) => {
+                                addAcademicRow(index, data);
+                            });
+                        }
+                    });
+                }
 
-            // Function to add an academic row dynamically
-            function addAcademicRow(index, data = {}) {
-                let row = `
-        <div class="academic-section">
+                // Function to add an academic row dynamically
+                function addAcademicRow(index, data = {}) {
+                    let row = `
+        <div class="academic-container">
             <div class="form-grid">
                 <div class="form-group">
                     <label>Board:</label>
-                    <select name="academic[${index}][board]" class="board-select" id="board-${index}">
+                    <select name="academic[${index}][boardId]" class="board-select" id="board-${index}">
                         <option value="">Loading...</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Courses:</label>
-                    <input type="text" name="academic[${index}][courses]" class="courses-input"
-                        value="${data.courses || ''}" placeholder="Enter your courses">
+                    <input type="text" name="academic[${index}][courseName]" class="courses-input"
+                        value="${data.courseName || ''}" placeholder="Enter your course">
                 </div>
 
                 <div class="form-group">
                     <label>Total Marks:</label>
-                    <input type="number" name="academic[${index}][total_marks]" class="total-marks"
-                        value="${data.total_marks || ''}" placeholder="Enter total marks">
+                    <input type="number" name="academic[${index}][totalMarks]" class="total-marks"
+                        value="${data.totalMarks || ''}" placeholder="Enter total marks">
                 </div>
 
                 <div class="form-group">
                     <label>Marks Secured:</label>
-                    <input type="number" name="academic[${index}][secured_marks]" class="secured-marks"
-                        value="${data.secured_marks || ''}" placeholder="Enter marks secured">
+                    <input type="number" name="academic[${index}][securedMarks]" class="secured-marks"
+                        value="${data.securedMarks || ''}" placeholder="Enter marks secured">
                 </div>
 
                 <div class="form-group">
                     <label>Percentage:</label>
-                    <input type="text" name="academic[${index}][percentage]" class="percentage-field" readonly
-                        value="${data.percentage || ''}">
+                    <input type="text" name="academic[${index}][percentageScore]" class="percentage-field" readonly
+                        value="${data.percentageScore || ''}">
                 </div>
 
                 <div class="form-group">
                     <label>Reference Files:</label>
-                    <input type="file" name="reference_files[${index}][]" multiple>
+                    <input type="file" name="referenceFiles[${index}][]" multiple>
                 </div>
             </div>
             <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button>
         </div>
         `;
-                $('#academic-container').append(row);
-                loadBoards(index, data.board);
-            }
+                    $('#academic-details-container').append(row);
+                    loadBoards(index, data.boardId);
+                }
 
-            // Load board options
-            function loadBoards(index, selectedBoard) {
-                $.ajax({
-                    url: 'editajax.php',
-                    type: 'POST',
-                    data: { type: 'board' },
-                    success: function (response) {
-                        let boardDropdown = $(`#board-${index}`);
-                        boardDropdown.html(response);
-                        if (selectedBoard) {
-                            boardDropdown.val(selectedBoard);
+                // Function to load board options
+                function loadBoards(index, selectedBoard) {
+                    $.ajax({
+                        url: 'editajax.php',
+                        type: 'POST',
+                        data: { type: 'board' },
+                        success: function (response) {
+                            let boardDropdown = $(`#board-${index}`);
+                            boardDropdown.html(response);
+                            if (selectedBoard) {
+                                boardDropdown.val(selectedBoard);
+                            }
                         }
-                    }
+                    });
+                }
+
+                // Remove academic section
+                window.removeAcademicRow = function (element) {
+                    $(element).closest('.academic-container').remove();
+                };
+
+                // Add new academic section
+                $('#add-academic').on('click', function () {
+                    let newIndex = $('.academic-container').length;
+                    addAcademicRow(newIndex);
                 });
-            }
-
-            // Remove academic section
-            window.removeAcademicRow = function (element) {
-                $(element).closest('.academic-section').remove();
-            };
-
-            // Add new academic section
-            $('#add-academic').on('click', function () {
-                let newIndex = $('.academic-section').length;
-                addAcademicRow(newIndex);
             });
-
         });
 
+    </script>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to get all currently selected board values
+            function getCurrentSelectedBoards() {
+                const boardSelects = document.querySelectorAll('.board-select');
+                return Array.from(boardSelects)
+                    .map(select => select.value)
+                    .filter(value => value !== '');
+            }
+
+            // Function to load boards dynamically
+            function loadBoards(selectElement = null) {
+                // If no specific select element is provided, select all board dropdowns
+                const boardSelects = selectElement
+                    ? [selectElement]
+                    : document.querySelectorAll('.board-select');
+
+                // Get currently selected boards
+                const currentSelectedBoards = getCurrentSelectedBoards();
+
+                // Use fetch for modern AJAX
+                fetch('get_boards.php')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(boards => {
+                        boardSelects.forEach(select => {
+                            // Remember current selection
+                            const currentSelectedValue = select.value;
+
+                            // Clear existing options
+                            select.innerHTML = '';
+
+                            // Add default option
+                            const defaultOption = document.createElement('option');
+                            defaultOption.value = '';
+                            defaultOption.textContent = '-- Select Board --';
+                            select.appendChild(defaultOption);
+
+                            // Populate board options
+                            boards.forEach(board => {
+                                // Only add board if:
+                                // 1. It's not selected in any other dropdown, OR
+                                // 2. It's the current dropdown's existing selection
+                                if (!currentSelectedBoards.includes(board.id) || board.id === currentSelectedValue) {
+                                    const option = document.createElement('option');
+                                    option.value = board.id;
+                                    option.textContent = board.board_name;
+
+                                    // Restore previous selection if it exists
+                                    if (board.id === currentSelectedValue) {
+                                        option.selected = true;
+                                    }
+
+                                    select.appendChild(option);
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading boards:', error);
+                        boardSelects.forEach(select => {
+                            select.innerHTML = '<option value="">Error Loading Boards</option>';
+                        });
+                    });
+            }
+
+            // Initial board loading
+            loadBoards();
+
+            // Track board selections
+            document.getElementById('academic-details-container').addEventListener('change', function (e) {
+                if (e.target.classList.contains('board-select')) {
+                    // Reload boards to update other dropdowns
+                    loadBoards();
+                }
+            });
+
+            // Add Academic Details Row
+            document.getElementById('add-academic').addEventListener('click', function () {
+                const container = document.getElementById('academic-details-container');
+
+                // Get the current number of academic rows
+                const currentRowCount = container.querySelectorAll('.academic-container').length;
+
+                // Create new academic row
+                const newRow = document.createElement('div');
+                newRow.className = 'academic-container';
+                newRow.innerHTML = `
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Board:</label>
+                    <select name="academic[${currentRowCount}][boardId]" class="board-select" id="board-${currentRowCount}">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Courses:</label>
+                    <input type="text" name="academic[${currentRowCount}][courseName]">
+                </div>
+
+                <div class="form-group">
+                    <label>Total Marks:</label>
+                    <input type="number" name="academic[${currentRowCount}][totalMarks]">
+                </div>
+
+                <div class="form-group">
+                    <label>Marks Secured:</label>
+                    <input type="number" name="academic[${currentRowCount}][securedMarks]">
+                </div>
+
+                <div class="form-group">
+                    <label>Percentage:</label>
+                    <input type="text" name="academic[${currentRowCount}][percentageScore]" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Reference Files:</label>
+                    <input type="file" name="referenceFiles[${currentRowCount}][]" multiple>
+                </div>
+            </div>
+
+            <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button>
+        `;
+
+                // Append new row
+                container.appendChild(newRow);
+
+                // Load boards for the new row
+                const newBoardSelect = newRow.querySelector('.board-select');
+                loadBoards(newBoardSelect);
+            });
+
+            // Percentage calculation
+            document.getElementById('academic-details-container').addEventListener('input', function (e) {
+                if (e.target.name && (e.target.name.includes('totalMarks') || e.target.name.includes('securedMarks'))) {
+                    const row = e.target.closest('.academic-container');
+                    const totalMarksInput = row.querySelector('input[name$="[totalMarks]"]');
+                    const securedMarksInput = row.querySelector('input[name$="[securedMarks]"]');
+                    const percentageInput = row.querySelector('input[name$="[percentageScore]"]');
+
+                    const totalMarks = parseFloat(totalMarksInput.value) || 0;
+                    const securedMarks = parseFloat(securedMarksInput.value) || 0;
+
+                    if (totalMarks > 0) {
+                        const percentage = ((securedMarks / totalMarks) * 100).toFixed(2);
+                        percentageInput.value = percentage;
+                    }
+                }
+            });
+
+            // Remove academic row
+            window.removeAcademicRow = function (button) {
+                const rowToRemove = button.closest('.academic-container');
+                const container = document.getElementById('academic-details-container');
+
+                if (container.querySelectorAll('.academic-container').length === 1) {
+                    const noDetailsMessage = document.createElement('p');
+                    noDetailsMessage.textContent = 'No academic details available. Click + to add.';
+                    container.innerHTML = '';
+                    container.appendChild(noDetailsMessage);
+                } else {
+                    rowToRemove.remove();
+                }
+
+                // Reload boards to update dropdowns
+                loadBoards();
+            };
+        });
     </script>
 
 

@@ -40,3 +40,24 @@ JOIN city ON signup.city = city.id;
     JOIN district ON signup.dist = district.id 
     JOIN city ON signup.city = city.id 
     WHERE signup.id = $id";
+
+
+
+    $sql1 = "INSERT INTO student (name, email, contact, gender, image, state, district, city, pincode, address, username, password) 
+                 VALUES ('$name', '$email', '$contact', '$gender', '$image', '$state', '$district', '$city', '$pincode', '$address', '$username', '$password')";
+
+        if (mysqli_query($conn, $sql1)) {
+            $student_id = mysqli_insert_id($conn);
+
+            for ($i = 0; $i < count($board); $i++) {
+                $board_val = mysqli_real_escape_string($conn, $board[$i]);
+                $course_val = mysqli_real_escape_string($conn, $course[$i]);
+                $percentage_val = mysqli_real_escape_string($conn, $percentage[$i]);
+                $totalmark_val = mysqli_real_escape_string($conn, $totalmark[$i]);
+                $actualmark_val = mysqli_real_escape_string($conn, $actualmark[$i]);
+                $attachment_val = mysqli_real_escape_string($conn, $attachment[$i]);
+
+                $sql2 = "INSERT INTO academic (board, course, percentage, totalmark, actualmark, attachment, id) 
+                     VALUES ('$board_val', '$course_val', '$percentage_val', '$totalmark_val', '$actualmark_val', '$attachment_val', '$student_id')";
+                (mysqli_query($conn, $sql2));
+            }
