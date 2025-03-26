@@ -483,6 +483,9 @@ WHERE academic_details.signup_id = $id";
                                     <label>Reference Files:</label>
                                     <input type="file" name="referenceFiles[<?php echo $academicIndex; ?>][]" multiple>
                                     <?php if (!empty($record['referenceFiles'])): ?>
+                                        <!-- for previous uploaded files hidden used -->
+                                         <!-- <p>previous file</p><br>
+                                         <p>👇</p> -->
                                         <input type='hidden' name='previousReferenceFiles[<?php echo $academicIndex; ?>]'
                                             value='<?php echo htmlspecialchars($record['referenceFiles']); ?>'>
                                         <div class="reference-file-preview">
@@ -491,7 +494,7 @@ WHERE academic_details.signup_id = $id";
                                             foreach ($fileList as $fileItem):
                                                 $fileLocation = "file_uploads_data/" . htmlspecialchars($fileItem);
                                                 ?>
-                                                <img src="<?php echo $fileLocation; ?>" alt="Reference File">
+                                                <!-- <img src="<?php //echo $fileLocation; ?>" alt="Reference File"> -->
                                                 <br><a href="<?php echo $fileLocation; ?>"
                                                     target="_blank"><?php echo htmlspecialchars($fileItem); ?></a><br>
                                             <?php endforeach; ?>
