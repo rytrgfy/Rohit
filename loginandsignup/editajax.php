@@ -104,25 +104,25 @@ if ($type == "academic") {
 
 // Fetch board dropdown options
 
-if ($type == "board") {
-    // Fetch the previously selected board
-    $selectedBoard = isset($_POST['selectedBoard']) ? $_POST['selectedBoard'] : '';
+// if ($type == "board") {
+//     // Fetch the previously selected board
+//     $selectedBoard = isset($_POST['selectedBoard']) ? $_POST['selectedBoard'] : '';
 
-    // Fetch all boards for the dropdown
-    $sql = "SELECT id, board_name FROM boards ORDER BY board_name ASC";
-    $query = $conn->query($sql);
+//     // Fetch all boards for the dropdown
+//     $sql = "SELECT id, board_name FROM boards ORDER BY board_name ASC";
+//     $query = $conn->query($sql);
 
-    if (!$query) {
-        die("Error fetching boards: " . $conn->error);
-    }
+//     if (!$query) {
+//         die("Error fetching boards: " . $conn->error);
+//     }
 
-    echo "<option value=''>-- Select Board --</option>";
-    while ($row = $query->fetch_assoc()) {
-        $selected = ($row['id'] == $selectedBoard) ? 'selected' : ''; // Compare ID, not name
-        echo "<option value='{$row['id']}' $selected>{$row['board_name']}</option>";
-    }
-    exit;
-}
+//     echo "<option value=''>-- Select Board --</option>";
+//     while ($row = $query->fetch_assoc()) {
+//         $selected = ($row['id'] == $selectedBoard) ? 'selected' : ''; // Compare ID, not name
+//         echo "<option value='{$row['id']}' $selected>{$row['board_name']}</option>";
+//     }
+//     exit;
+// }
 
 
 ?>

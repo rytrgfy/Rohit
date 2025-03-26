@@ -172,3 +172,40 @@
     endif;
     ?>
 </div>
+
+
+
+<?php 
+
+
+
+// $sql1 = "INSERT INTO student (name, email, contact, gender, image, state, district, city, pincode, address, username, password) 
+//                  VALUES ('$name', '$email', '$contact', '$gender', '$image', '$state', '$district', '$city', '$pincode', '$address', '$username', '$password')";
+
+// if (mysqli_query($conn, $sql1)) {
+//     $student_id = mysqli_insert_id($conn);
+    
+//     if (!empty($_POST['board']) && is_array($_POST['board'])) {
+//         foreach ($_POST['board'] as $key => $board) {
+//             //echo "hii"; exit();
+//             $course = $_POST['course'][$key];
+//             $percentage = $_POST['percentage'][$key];
+//             $totalmark = $_POST['totalmark'][$key];
+//             $actualmark = $_POST['actualmark'][$key];
+//             echo $course;
+//             echo $percentage;
+//             exit();
+//             $attachment = "";
+//             if (!empty($_FILES['attachment']['name'][$key])) {
+//                 $attachment_name = time() . "_" . $_FILES['attachment']['name'][$key];
+//                 move_uploaded_file($_FILES['attachment']['tmp_name'][$key], $upload_dir . $attachment_name);
+//                 $attachment = $attachment_name;
+//             }
+            
+//             $sql2 = "INSERT INTO academic (board, course, percentage, totalmark, actualmark, attachment, id) 
+//                              VALUES ('$board', '$course', '$percentage', '$totalmark', '$actualmark', '$attachment', '$student_id')";
+//                     mysqli_query($conn, $sql2);
+//                 }
+//             }
+            
+?>

@@ -53,9 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if ($data['username'] === $username && $data['password'] === $password) {
         $_SESSION['user_id'] = $data['id']; // Store user ID in session
         $_SESSION['username'] = $data['username'];
-        if ($username === 'Admin' && $password === 'Admin') {
+        if ($username === 'Admin' || $password === 'Admin') {
             echo "
-            <script>
+            <script> 
             alert('Login success');
             window.location.href = 'admin.php'; 
             </script>";
