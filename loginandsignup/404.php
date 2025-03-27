@@ -7,6 +7,6 @@
 </head>
 <body>
     <h1>404 erro page not found</h1>
-    <p>Go back:➡️ <a href='index.html'>Click me</a></p>
+    <p>Go back:➡️ <a href='dashboard.php'>Click me</a></p>
 </body>
 </html>

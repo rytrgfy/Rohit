@@ -54,7 +54,11 @@ if (!$result) {
     die("Query failed: " . $conn->error);
 }
 
-$data = $result->fetch_assoc();
+if ($result->num_rows > 0) {
+    $data = $result->fetch_assoc();
+} else {
+    die("No data found for the provided ID.");
+}
 // print_r($data);
 
 
@@ -94,6 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $profile_photo = $_FILES['profile_photo']['name'];
     $profile_photo_tmp = $_FILES['profile_photo']['tmp_name'];
     $previous_profile_photo = $_POST['previous_profile_photo'];
+    $academic = $_POST['academic'];
+    $referenceFiles = $_FILES['referenceFiles'];
+    $previousReferenceFiles = $_POST['previousReferenceFiles'];
 
     // Validate data
     if (empty($name) || empty($contact) || empty($address) || empty($state) || empty($district) || empty($city)) {
@@ -123,6 +130,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $update_user_sql .= " WHERE id = $id";
 
     if ($conn->query($update_user_sql)) {
+        // Delete existing academic details
+        $delete_academic_sql = "DELETE FROM academic_details WHERE signup_id = $id";
+        if ($conn->query($delete_academic_sql)) {
+            // Re-insert academic details
+            if (!empty($academic)) {
+                foreach ($academic as $index => $record) {
+                    $boardId = $record['boardId'];
+                    $courseName = $record['courseName'];
+                    $totalMarks = $record['totalMarks'];
+                    $securedMarks = $record['securedMarks'];
+                    $percentageScore = $record['percentageScore'];
+
+                    // Handle reference files
+                    $uploadedFiles = [];
+                    if (!empty($referenceFiles['name'][$index][0])) {
+                        foreach ($referenceFiles['name'][$index] as $fileIndex => $fileName) {
+                            $fileTmp = $referenceFiles['tmp_name'][$index][$fileIndex];
+                            $newFileName = uniqid() . '_' . $fileName;
+                            move_uploaded_file($fileTmp, "file_uploads_data/$newFileName");
+                            $uploadedFiles[] = $newFileName;
+                        }
+                    }
+
+                    // Use old files if no new files are uploaded
+                    $finalFiles = !empty($uploadedFiles) ? implode(',', $uploadedFiles) : $previousReferenceFiles[$index];
+
+                    // Insert new academic record
+                    $insert_academic_sql = "INSERT INTO academic_details (signup_id, board, courses, total_marks, secured_marks, percentage, reference_file) 
+                                            VALUES ($id, $boardId, '$courseName', $totalMarks, $securedMarks, $percentageScore, '$finalFiles')";
+                    if (!$conn->query($insert_academic_sql)) {
+                        echo "<script>alert('Error updating academic details: {$conn->error}');</script>";
+                    }
+                }
+            }
+        }
         echo "<script>alert('Profile updated successfully!'); window.location.href='dashboard.php';</script>";
     } else {
         echo "<script>alert('Error updating profile: {$conn->error}');</script>";
@@ -479,7 +521,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <?php if (!empty($data['profile_photo'])): ?>
                                 <img src="photos/<?php echo $data['profile_photo']; ?>" id="profileImage"
                                     alt="Profile Photo" width="100">
-                                <input type="hidden" name="previous_profile_photo" value="<?php echo $data['profile_photo']; ?>">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -624,7 +665,7 @@ WHERE academic_details.signup_id = $id";
             <div class="submit-container">
                 <input type="submit" name="signup" value="update">
             </div>
-            <button><a href="dashboard.php">go-back</a></button>
+            <button><a href="dashboard.php">Dashboard</a></button>
         </form>
     </div>
 

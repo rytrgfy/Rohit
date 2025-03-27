@@ -13,6 +13,8 @@ if (isset($_GET['id'])) {
 } else {
     die("ID not provided.");
 }
+// echo $id;
+// exit();
 
 
 $fetch_data_sql = "SELECT 
