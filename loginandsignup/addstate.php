@@ -4,11 +4,10 @@ session_start();
 
 // Updated SQL JOIN query to include cities
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location:  404.php");
-    
+if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != '78') {
+    header("Location: 404.php");
     exit();
-}  
+} 
 //  cnc
 
 $sql_get_state = "SELECT * FROM state ORDER BY id ASC";

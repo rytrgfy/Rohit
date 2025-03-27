@@ -213,12 +213,12 @@ $result = $conn->query($sql);
 
     <div class="profile-container">
         <?php while ($row = $result->fetch_assoc()) { ?>
-            
+
             <table class="profile-table">
                 <tr>
                     <td class="photo-cell">
                         <?php if (!empty($row['profile_photo'])): ?>
-                            
+
                             <img src="photos/<?php echo $row['profile_photo']; ?>" class="profile-photo" alt="Profile Photo">
                         <?php else: ?>
                             <div class="profile-photo"
@@ -251,12 +251,18 @@ $result = $conn->query($sql);
             </table>
 
             <div class="actions">
-            <a href="forgetpassword.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">Change Password</a>
-                <a href="view_profile.php?id=<?php echo $row['id']; ?>" class="action-btn view-btn">View Profile</a>
-                <a href="edit_profile.php?id=<?php echo $row['id']; ?>" class="action-btn edit-btn">Edit Profile</a>
-                <input type="hidden" name="view_profile" value="<?php echo $row['id']; ?>">
-                <input type="hidden" name="edit" value="<?php echo $row['id']; ?>">
+                <form action="handle_action.php" method="POST">
+                    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+
+                    <button type="submit" name="action" value="change_password" class="action-btn view-btn">Change
+                        Password</button>
+                    <button type="submit" name="action" value="view_profile" class="action-btn view-btn">View
+                        Profile</button>
+                    <button type="submit" name="action" value="edit_profile" class="action-btn edit-btn">Edit
+                        Profile</button>
+                </form>
             </div>
+
         <?php } ?>
     </div>
 </body>

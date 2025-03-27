@@ -1,12 +1,19 @@
 <?php
-$id = $_GET['id'];
+
 include 'dbconn.php';
 session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] != $id) {
-    header("Location: index.html");
-    exit();
+if (isset($_GET['id'])) {
+    $id = base64_decode($_GET['id']);
+
+    // Validate decoded ID (must be a number)
+    if (!is_numeric($id) || $id <= 0) {
+        die("Invalid ID.");
+    }
+} else {
+    die("ID not provided.");
 }
+
 
 $fetch_data_sql = "SELECT 
     signup.name, 

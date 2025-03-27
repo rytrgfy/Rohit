@@ -1,13 +1,26 @@
 <?php
 include 'dbconn.php';
 session_start();
+
+// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.html");
     exit();
 }
-$id = $_GET['id'];
-echo $id;
 
+// Check if ID is provided and decode it
+if (isset($_GET['id'])) {
+    $id = base64_decode($_GET['id']);
+
+    // Validate decoded ID (must be a number)
+    if (!is_numeric($id) || $id <= 0) {
+        die("Invalid ID.");
+    }
+} else {
+    die("ID not provided.");
+}
+
+// Fetch user data
 $fetch_data_sql = "SELECT 
     signup.username, 
     signup.password, 
@@ -34,13 +47,17 @@ JOIN boards ON academic_details.board = boards.id
 JOIN state ON signup.state = state.id 
 JOIN district ON signup.dist = district.id 
 JOIN city ON signup.city = city.id 
-WHERE signup.id = $id;
-";
+WHERE signup.id = $id"; // No quotes needed around integer
+
 $result = $conn->query($fetch_data_sql);
 if (!$result) {
     die("Query failed: " . $conn->error);
 }
+
 $data = $result->fetch_assoc();
+// print_r($data);
+
+
 
 // $academicData = [];
 // while ($row = $result->fetch_assoc()) {
@@ -67,6 +84,71 @@ $data = $result->fetch_assoc();
 
 
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = $_POST['name'];
+    $contact = $_POST['contact'];
+    $address = $_POST['address'];
+    $state = $_POST['state'];
+    $district = $_POST['district'];
+    $city = $_POST['city'];
+    $profile_photo = $_FILES['profile_photo']['name'];
+    $profile_photo_tmp = $_FILES['profile_photo']['tmp_name'];
+    $previous_profile_photo = $_POST['previous_profile_photo'];
+
+    // Validate data
+    if (empty($name) || empty($contact) || empty($address) || empty($state) || empty($district) || empty($city)) {
+        die("Please fill all required fields.");
+    }
+
+    // Update user data
+    $update_user_sql = "UPDATE signup SET name = '$name', contact = '$contact', address = '$address', state = '$state', dist = '$district', city = '$city'";
+
+    // Update profile photo if provided
+    if (!empty($profile_photo)) {
+        // Delete previous photo if exists
+        if (!empty($previous_profile_photo)) {
+            unlink("photos/" . $previous_profile_photo);
+        }
+
+        // Upload new photo
+        $profile_photo = uniqid() . '_' . $profile_photo;
+        move_uploaded_file($profile_photo_tmp, "photos/$profile_photo");
+
+        $update_user_sql .= ", profile_photo = '$profile_photo'";
+    } else {
+        // Keep the old profile photo if no new one is uploaded
+        $profile_photo = $previous_profile_photo;
+    }
+
+    $update_user_sql .= " WHERE id = $id";
+
+    if ($conn->query($update_user_sql)) {
+        echo "<script>alert('Profile updated successfully!'); window.location.href='dashboard.php';</script>";
+    } else {
+        echo "<script>alert('Error updating profile: {$conn->error}');</script>";
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -84,6 +166,7 @@ $data = $result->fetch_assoc();
 
 <!DOCTYPE html>
 <html lang="en">
+
 
 <head>
     <meta charset="UTF-8">
@@ -396,6 +479,7 @@ $data = $result->fetch_assoc();
                             <?php if (!empty($data['profile_photo'])): ?>
                                 <img src="photos/<?php echo $data['profile_photo']; ?>" id="profileImage"
                                     alt="Profile Photo" width="100">
+                                <input type="hidden" name="previous_profile_photo" value="<?php echo $data['profile_photo']; ?>">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -484,7 +568,7 @@ WHERE academic_details.signup_id = $id";
                                     <input type="file" name="referenceFiles[<?php echo $academicIndex; ?>][]" multiple>
                                     <?php if (!empty($record['referenceFiles'])): ?>
                                         <!-- for previous uploaded files hidden used -->
-                                         <!-- <p>previous file</p><br>
+                                        <!-- <p>previous file</p><br>
                                          <p>👇</p> -->
                                         <input type='hidden' name='previousReferenceFiles[<?php echo $academicIndex; ?>]'
                                             value='<?php echo htmlspecialchars($record['referenceFiles']); ?>'>
@@ -538,8 +622,9 @@ WHERE academic_details.signup_id = $id";
             </div>
 
             <div class="submit-container">
-                <input type="submit" name="signup" value="Sign Up">
+                <input type="submit" name="signup" value="update">
             </div>
+            <button><a href="dashboard.php">go-back</a></button>
         </form>
     </div>
 
@@ -547,21 +632,27 @@ WHERE academic_details.signup_id = $id";
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            loadStates(); // Load states on page load
-            loadAcademicDetails(); // Load academic details
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load states on page load
+            loadStates();
+            loadAcademicDetails();
+
+            // Event listeners for state, district, and city selection
+            const stateSelect = document.getElementById('stateId');
+            const districtSelect = document.getElementById('districtId');
+            const citySelect = document.getElementById('cityId');
 
             // Fetch districts when state changes
-            $('#stateId').on('change', function () {
-                let stateId = $(this).val();
+            stateSelect.addEventListener('change', function () {
+                const stateId = this.value;
                 if (stateId) {
                     loadDistricts(stateId);
                 }
             });
 
             // Fetch cities when district changes
-            $('#districtId').on('change', function () {
-                let districtId = $(this).val();
+            districtSelect.addEventListener('change', function () {
+                const districtId = this.value;
                 if (districtId) {
                     loadCities(districtId);
                 }
@@ -569,48 +660,84 @@ WHERE academic_details.signup_id = $id";
 
             // Function to load states
             function loadStates() {
-                $.ajax({
-                    url: 'editajax.php',
-                    type: 'POST',
-                    data: { type: 'state' },
-                    success: function (response) {
-                        $('#stateId').html(response);
-                        let selectedState = "<?php echo $data['state_id']; ?>";
-                        $('#stateId').val(selectedState);
+                fetch('editajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'type=state'
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        stateSelect.innerHTML = data;
+
+                        // Set selected state from PHP variable (assuming it's available in the global scope)
+                        const selectedState = window.selectedState || '<?php echo $data["state_id"]; ?>';
+                        stateSelect.value = selectedState;
+
+                        // Load districts for the selected state
                         loadDistricts(selectedState);
-                    }
-                });
+                    })
+                    .catch(error => {
+                        console.error('Error loading states:', error);
+                    });
             }
 
             // Function to load districts
             function loadDistricts(stateId) {
                 if (!stateId) return;
-                $.ajax({
-                    url: 'editajax.php',
-                    type: 'POST',
-                    data: { type: 'district', stateId: stateId },
-                    success: function (response) {
-                        $('#districtId').html(response);
-                        let selectedDistrict = "<?php echo $data['district_id']; ?>";
-                        $('#districtId').val(selectedDistrict);
+
+                fetch('editajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `type=district&stateId=${stateId}`
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        districtSelect.innerHTML = data;
+
+                        // Set selected district from PHP variable
+                        const selectedDistrict = window.selectedDistrict || '<?php echo $data["district_id"]; ?>';
+                        districtSelect.value = selectedDistrict;
+
+                        // Load cities for the selected district
                         loadCities(selectedDistrict);
-                    }
-                });
+                    })
+                    .catch(error => {
+                        console.error('Error loading districts:', error);
+                    });
             }
 
             // Function to load cities
             function loadCities(districtId) {
                 if (!districtId) return;
-                $.ajax({
-                    url: 'editajax.php',
-                    type: 'POST',
-                    data: { type: 'city', districtId: districtId },
-                    success: function (response) {
-                        $('#cityId').html(response);
-                        let selectedCity = "<?php echo $data['city_id']; ?>";
-                        $('#cityId').val(selectedCity);
-                    }
-                });
+
+                fetch('editajax.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `type=city&districtId=${districtId}`
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        citySelect.innerHTML = data;
+
+                        // Set selected city from PHP variable
+                        const selectedCity = window.selectedCity || '<?php echo $data["city_id"]; ?>';
+                        citySelect.value = selectedCity;
+                    })
+                    .catch(error => {
+                        console.error('Error loading cities:', error);
+                    });
+            }
+
+            // Placeholder for loadAcademicDetails function
+            function loadAcademicDetails() {
+                // Implement your academic details loading logic here
+                console.log('Loading academic details');
             }
         });
 
