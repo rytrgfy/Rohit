@@ -171,40 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ?>
-
-
-<!-- update html -->
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -933,6 +900,11 @@ WHERE academic_details.signup_id = $id";
 
                     const totalMarks = parseFloat(totalMarksInput.value) || 0;
                     const securedMarks = parseFloat(securedMarksInput.value) || 0;
+                    if(totalMarks < securedMarks){
+                        alert('secured marks should be less than total marks');
+                        securedMarksInput.value = '';
+                        percentageInput.value = '';
+                    }
 
                     if (totalMarks > 0) {
                         const percentage = ((securedMarks / totalMarks) * 100).toFixed(2);

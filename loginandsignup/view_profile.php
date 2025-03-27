@@ -336,7 +336,7 @@ $first_record = array_map(function ($value) {
                 <a href="logout.php">Logout</a>
             </div>
             <div>
-                <a href="edit_profile.php?id=<?php echo $id; ?>" style="text-decoration: none;">
+                <!-- <a href="edit_profile.php?id=<?php echo $id; ?>" style="text-decoration: none;"> -->
                     <button
                         style="background-color: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer;">
                         <i class="fas fa-edit"></i> Edit Profile

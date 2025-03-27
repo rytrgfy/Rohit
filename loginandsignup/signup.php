@@ -605,6 +605,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             function calculatePercentage(section) {
                 const totalMarks = parseFloat($(section).find('.total-marks').val()) || 0;
                 const securedMarks = parseFloat($(section).find('.secured-marks').val()) || 0;
+                if (securedMarks > totalMarks) {
+                    alert('Marks secured cannot be greater than total marks!');
+                    $(section).find('.secured-marks').val('');
+                    return;
+                }
 
                 if (totalMarks > 0) {
                     const percentage = (securedMarks / totalMarks * 100).toFixed(2);
