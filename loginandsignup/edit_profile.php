@@ -431,6 +431,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: #aaa;
             opacity: 1;
         }
+
+        .err_msg {
+            color: red !important;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -845,27 +850,27 @@ WHERE academic_details.signup_id = $id";
                 const newRow = document.createElement('div');
                 newRow.className = 'academic-container';
                 newRow.innerHTML = `
-            <div class="form-grid">
+                <div class="form-grid">
                 <div class="form-group">
                     <label>Board:</label>
-                    <select name="academic[${currentRowCount}][boardId]" class="board-select" id="board-${currentRowCount}">
+                    <select name="academic[${currentRowCount}][boardId]" class="board-select" id="board-${currentRowCount}" required>
                         <option value="">Loading...</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Courses:</label>
-                    <input type="text" name="academic[${currentRowCount}][courseName]">
+                    <input type="text" name="academic[${currentRowCount}][courseName]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Total Marks:</label>
-                    <input type="number" name="academic[${currentRowCount}][totalMarks]">
+                    <input type="number" name="academic[${currentRowCount}][totalMarks]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Marks Secured:</label>
-                    <input type="number" name="academic[${currentRowCount}][securedMarks]">
+                    <input type="number" name="academic[${currentRowCount}][securedMarks]" required >
                 </div>
 
                 <div class="form-group">
@@ -875,7 +880,7 @@ WHERE academic_details.signup_id = $id";
 
                 <div class="form-group">
                     <label>Reference Files:</label>
-                    <input type="file" name="referenceFiles[${currentRowCount}][]" multiple>
+                    <input type="file" name="referenceFiles[${currentRowCount}][]" multiple required>
                 </div>
             </div>
 
@@ -900,7 +905,7 @@ WHERE academic_details.signup_id = $id";
 
                     const totalMarks = parseFloat(totalMarksInput.value) || 0;
                     const securedMarks = parseFloat(securedMarksInput.value) || 0;
-                    if(totalMarks < securedMarks){
+                    if (totalMarks < securedMarks) {
                         alert('secured marks should be less than total marks');
                         securedMarksInput.value = '';
                         percentageInput.value = '';
@@ -934,6 +939,118 @@ WHERE academic_details.signup_id = $id";
     </script>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // No leading spaces validation
+            $.validator.addMethod("noleadingspace", function (val, e) {
+                return this.optional(e) || /^\S.*$/.test(val);
+            }, "Leading spaces are not allowed");
+
+            // Regex validation (letters, numbers, spaces, apostrophes, and dots)
+            $.validator.addMethod("regex", function (val, e) {
+                return this.optional(e) || /^[a-zA-Z0-9'.\s]{1,40}$/.test(val);
+            }, "Only letters, numbers, spaces, apostrophes, and dots allowed (Max 40 characters)");
+
+            // Custom validation: Prevent negative or zero marks
+            $.validator.addMethod("positiveNumber", function (val, e) {
+                return this.optional(e) || (val > 0);
+            }, "Value must be greater than zero");
+
+            // Custom validation: Ensure secured marks do not exceed total marks
+            $.validator.addMethod("securedLessThanTotal", function (val, e) {
+                const totalMarks = $(e).closest('.form-grid').find('[name^="academic["][name$="[totalMarks]"]').val();
+                return this.optional(e) || (parseFloat(val) <= parseFloat(totalMarks));
+            }, "Secured marks cannot exceed total marks");
+
+            // File validation: Allow only specific formats and size limit (5MB)
+            $.validator.addMethod("validFile", function (val, e) {
+                if (e.files.length === 0) return true; // If no file, allow it
+                const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                return Array.from(e.files).every(file => allowedTypes.includes(file.type) && file.size <= maxSize);
+            }, "Allowed file types: JPG, PNG, PDF (Max size: 5MB)");
+
+            // Form validation rules
+            $("#signupForm").validate({
+                rules: {
+                    name: { required: true, regex: true, noleadingspace: true },
+                    contact: { required: true, number: true, minlength: 10, maxlength: 10 },
+                    address: { required: true, regex: true, noleadingspace: true },
+                    state: { required: true },
+                    district: { required: true },
+                    city: { required: true },
+                    // profile_photo: { required: true },
+
+                    "academic[0][boardId]": { required: true },
+                    "academic[0][courseName]": { required: true },
+                    "academic[0][totalMarks]": { required: true, number: true, positiveNumber: true },
+                    "academic[0][securedMarks]": { required: true, number: true, securedLessThanTotal: true },
+                    "academic[0][percentageScore]": { required: true, number: true },
+                    // "referenceFiles[0][]": { required: true, validFile: true }
+                },
+                messages: {
+                    name: { required: "Name is required" },
+                    contact: { required: "Contact is required", number: "Enter a valid contact number" },
+                    address: { required: "Address is required" },
+                    state: { required: "State is required" },
+                    district: { required: "District is required" },
+                    city: { required: "City is required" },
+                    // profile_photo: { required: "Profile photo is required" },
+
+                    "academic[0][boardId]": { required: "Board is required" },
+                    "academic[0][courseName]": { required: "Course name is required" },
+                    "academic[0][totalMarks]": { required: "Total marks are required", number: "Enter a valid number" },
+                    "academic[0][securedMarks]": { required: "Marks secured are required", number: "Enter a valid number" },
+                    "academic[0][percentageScore]": { required: "Percentage is required", number: "Enter a valid number" },
+                    // "referenceFiles[0][]": { required: "Reference file is required" }
+                },
+                errorPlacement: function (err_msg, e) {
+                    err_msg.addClass("err_msg");
+                    err_msg.insertAfter(e);
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+
+            // Auto-calculate percentage when secured marks or total marks change
+            // $(document).on('input', '[name^="academic["][name$="[totalMarks]"], [name^="academic["][name$="[securedMarks]"]', function () {
+            //     const formGrid = $(this).closest('.form-grid');
+            //     const totalMarks = parseFloat(formGrid.find('[name^="academic["][name$="[totalMarks]"]').val()) || 0;
+            //     const securedMarks = parseFloat(formGrid.find('[name^="academic["][name$="[securedMarks]"]').val()) || 0;
+
+            //     if (totalMarks > 0 && securedMarks >= 0) {
+            //         const percentage = (securedMarks / totalMarks) * 100;
+            //         formGrid.find('[name^="academic["][name$="[percentageScore]"]').val(percentage.toFixed(2));
+            //     } else {
+            //         formGrid.find('[name^="academic["][name$="[percentageScore]"]').val('');
+            //     }
+            // });
+
+            // Add validation for dynamically added academic rows
+            $('#add-academic').on('click', function () {
+                const currentRowCount = $('#academic-details-container .academic-container').length;
+
+                // Add validation rules dynamically
+                $(`[name="academic[${currentRowCount}][boardId]"]`).rules("add", { required: true, messages: { required: "Board is required" } });
+                $(`[name="academic[${currentRowCount}][courseName]"]`).rules("add", { required: true, messages: { required: "Course name is required" } });
+                $(`[name="academic[${currentRowCount}][totalMarks]"]`).rules("add", { required: true, number: true, positiveNumber: true, messages: { required: "Total marks are required", number: "Enter a valid number" } });
+                $(`[name="academic[${currentRowCount}][securedMarks]"]`).rules("add", { required: true, number: true, securedLessThanTotal: true, messages: { required: "Marks secured are required", number: "Enter a valid number" } });
+                $(`[name="academic[${currentRowCount}][percentageScore]"]`).rules("add", { required: true, number: true, messages: { required: "Percentage is required", number: "Enter a valid number" } });
+                $(`[name="referenceFiles[${currentRowCount}][]"]`).rules("add", { required: true, validFile: true, messages: { required: "Reference file is required" } });
+            });
+
+            // Prevent form submission if there are validation errors
+            $("#signupForm").on("submit", function (e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+    </script>
 
 </body>
 

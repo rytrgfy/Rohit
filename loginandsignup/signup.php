@@ -368,6 +368,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #aaa;
             opacity: 1;
         }
+        .err_msg{
+            /* background-color: red; */
+            color: red !important;
+        }
+        .err_msg::before{
+            content: "⚠ ";
+        }
+        
     </style>
 </head>
 
@@ -698,6 +706,165 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             loadBoards('.board-select');
         });
     </script>
+
+    <!-- jQuery Validation Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // No leading spaces validation
+            $.validator.addMethod("noleadingspace", function (val, e) {
+                return this.optional(e) || /^\S.*$/.test(val); // first character is not a space
+            }, "Leading spaces are not allowed");
+
+            // regex validation method (Allows letters, numbers, spaces, apostrophes, and dots)
+            $.validator.addMethod("regex", function (val, e) {
+                return this.optional(e) || /^[a-zA-Z0-9'.\s]{1,40}$/.test(val);
+            }, "Only letters, numbers, spaces, apostrophes, and dots are allowed (Max 40 characters)");
+
+            // Apply validation to the form
+            $("#signupForm").validate({
+                rules: {
+                    name: {
+                        required: true,
+                        regex: true,
+                        noleadingspace: true
+                    },
+                    contact: {
+                        required: true,
+                        number: true,
+                        minlength: 10,
+                        maxlength: 10
+                    },
+                    address: {
+                        required: true,
+                        regex: true,
+                        noleadingspace: true
+                    },
+                    state: {
+                        required: true
+                    },
+                    district: {
+                        required: true
+                    },
+                    city: {
+                        required: true
+                    },
+                    profile_photo: {
+                        required: true
+                    },
+                    username: {
+                        required: true,
+                        regex: true,
+                        noleadingspace: true
+                    },
+                    password: {
+                        required: true
+                    },
+                    cnfpassword: {
+                        required: true,
+                        equalTo: "input[name='password']"
+                    },
+                    "academic[0][board]": {
+                        required: true
+                    },
+                    "academic[0][courses]": {
+                        required: true
+                    },
+                    "academic[0][total_marks]": {
+                        required: true
+                    },
+                    "academic[0][secured_marks]": {
+                        required: true
+                    },
+                    "academic[0][percentage]": {
+                        required: true
+                    },
+                    "reference_files[0][]": {
+                        required: true
+                    }
+                },
+                messages: {
+                    name: {
+                        required: "Name is required",
+                        regex: "Enter valid details (letters, numbers, spaces, apostrophes, dots allowed)",
+                        noleadingspace: "Leading spaces are not allowed"
+                    },
+                    contact: {
+                        required: "Contact is required",
+                        number: "Enter a valid contact number",
+                        minlength: "Contact number must be 10 digits",
+                        maxlength: "Contact number must be 10 digits"
+                    },
+                    address: {
+                        required: "Address is required",
+                        regex: "Enter valid details (letters, numbers, spaces, apostrophes, dots allowed)",
+                        noleadingspace: "Leading spaces are not allowed"
+                    },
+                    state: {
+                        required: "State is required"
+                    },
+                    district: {
+                        required: "District is required"
+                    },
+                    city: {
+                        required: "City is required"
+                    },
+                    profile_photo: {
+                        required: "Profile photo is required"
+                    },
+                    username: {
+                        required: "Username is required",
+                        regex: "Enter valid details (letters, numbers, spaces, apostrophes, dots allowed)",
+                        noleadingspace: "Leading spaces are not allowed"
+                    },
+                    password: {
+                        required: "Password is required"
+                    },
+                    cnfpassword: {
+                        required: "Confirm password is required",
+                        equalTo: "Passwords do not match"
+                    },
+                    "academic[0][board]": {
+                        required: "Board is required"
+                    },
+                    "academic[0][courses]": {
+                        required: "Courses are required"
+                    },
+                    "academic[0][total_marks]": {
+                        required: "Total marks are required"
+                    },
+                    "academic[0][secured_marks]": {
+                        required: "Marks secured are required"
+                    },
+                    "academic[0][percentage]": {
+                        required: "Percentage is required"
+                    },
+                    "reference_files[0][]": {
+                        required: "Reference files are required"
+                    }
+                },
+                errorPlacement: function (err_msg, e) {
+                    err_msg.addClass("err_msg"); // Add error message class
+                    err_msg.insertAfter(e);
+                },
+                submitHandler: function (form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+    <!-- <style>
+        .err_msg {
+            color: red;
+        }
+    </style> -->
+
+
+
+
+
+
 </body>
 
 </html>
@@ -711,3 +878,7 @@ data sending to db is still pending and validation of signup page is still pendi
 to be done on monday 
 date 21-05-2025 
  ---------------------------------------------------------------------------------------------->
+
+<!--                                     date 28-03-2025                                           
+validation to be done edit signup and forget password done 
+-->
