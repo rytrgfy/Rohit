@@ -1,26 +1,13 @@
 <?php
 include "dbconn.php";
 
-
-
-// $state_id = $_POST['stateId'];
-// echo $state_id;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $contact = $_POST["contact"];
     $address = $_POST["address"];
-    $state_id = isset($_POST["state_id"]) ? $_POST["state_id"] : 0;
-    $district_id = isset($_POST["district_id"]) ? $_POST["district_id"] : 0;
-    $city_id = isset($_POST["city_id"]) ? $_POST["city_id"] : 0;
-
-    // echo "State ID: " . $state_id . "<br>";
-    // echo "District ID: " . $district_id . "<br>";
-    // echo "City ID: " . $city_id . "<br>";
-    // exit();
-
-
-
-
+    $state_id = isset($_POST["state"]) ? $_POST["state"] : 0;
+    $district_id = isset($_POST["district"]) ? $_POST["district"] : 0;
+    $city_id = isset($_POST["city"]) ? $_POST["city"] : 0;
 
     $profile_photo = '';
 
@@ -33,11 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (move_uploaded_file($tmp_name, $target_path)) {
             $profile_photo = $file_name;
         } else {
-            echo "Photo upload failed!";
+            echo "<script>alert('Photo upload failed!');</script>";
             exit();
         }
     } else {
-        echo "No photo selected.";
+        echo "<script>alert('No photo selected.');</script>";
         exit();
     }
 
@@ -48,14 +35,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Password validation
     if ($password !== $cnfpassword) {
-        echo "Passwords do not match!";
+        echo "<script>alert('Passwords do not match!');</script>";
         exit();
     }
+    $hashedPassword = md5($password);
 
     // Insert into signup table
     $insert_sql = "INSERT INTO signup (name, contact, address, profile_photo, state, dist, city, username, password) 
-               VALUES ('$name', '$contact', '$address', '$profile_photo', '$state_id', '$district_id', '$city_id', '$username', '$password')";
-
+                   VALUES ('$name', '$contact', '$address', '$profile_photo', '$state_id', '$district_id', '$city_id', '$username', '$hashedPassword')";
 
     if ($conn->query($insert_sql) === TRUE) {
         $last_insert_id = $conn->insert_id;
@@ -79,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (move_uploaded_file($tmp_name, $target_path)) {
                             $reference_files[] = $file_name;
                         } else {
-                            echo "File upload failed!";
+                            echo "<script>alert('File upload failed!');</script>";
                             exit();
                         }
                     }
@@ -92,15 +79,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             VALUES ('$last_insert_id', '$board', '$courses', '$total_marks', '$secured_marks', '$percentage', '$reference_files_str')";
 
                 if (!$conn->query($insert_academic_details)) {
-                    echo "Error inserting academic details: " . $conn->error;
+                    echo "<script>alert('Error inserting academic details: " . $conn->error . "');</script>";
                     exit();
                 }
             }
         }
 
-        // echo "<script>alert('Data submitted successfully');window.location.href='index.html';</script>";
+        echo "<script>alert('Data submitted successfully');window.location.href='index.html';</script>";
     } else {
-        echo $conn->error;
+        echo "<script>alert('Error: " . $conn->error . "');</script>";
+        // exit();
     }
 }
 ?>
@@ -141,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 25px;
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 15px rgba(174, 22, 22, 0.3);
         }
 
         /* Form Sections */
@@ -167,11 +155,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .academic-section {
-            background-color: #f9f9f9;
+            background-color: rgb(185, 180, 180, 0.5);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solidrgb(16, 25, 31);
         }
 
         .form-grid {
@@ -211,8 +199,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         textarea:focus,
         select:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            border-color: rgb(216, 72, 149);
+            box-shadow: 0 0 0 3px rgba(208, 222, 90, 0.74);
         }
 
         textarea {
@@ -225,7 +213,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 10px;
             border: 1px dashed #ccc;
             border-radius: 6px;
-            background-color: #f8f9fa;
+            background-color: rgb(211, 213, 215);
             width: 100%;
         }
 
@@ -241,7 +229,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         /* Buttons */
         #add-academic {
-            background-color: #27ae60;
+            background-color: rgb(36, 119, 220);
             color: white;
             border: none;
             border-radius: 50%;
@@ -260,7 +248,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         #add-academic:hover {
-            background-color: #2ecc71;
+            background-color: rgb(69, 234, 36);
             transform: scale(1.05);
         }
 
@@ -298,7 +286,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         input[type="submit"]:hover {
-            background-color: #2980b9;
+            background-color: rgb(93, 226, 73);
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
         }
@@ -368,14 +356,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #aaa;
             opacity: 1;
         }
-        .err_msg{
+
+        .err_msg {
             /* background-color: red; */
             color: red !important;
         }
-        .err_msg::before{
+
+        .err_msg::before {
             content: "⚠ ";
         }
-        
     </style>
 </head>
 
@@ -568,7 +557,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 formData.append("city_id", $("#city_id").val());
 
                 $.ajax({
-                    url: "signup.php", // Use a separate processing file
+                    url: "signup.php",
                     type: "POST",
                     data: formData,
                     processData: false,
@@ -777,9 +766,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     "academic[0][secured_marks]": {
                         required: true
                     },
-                    "academic[0][percentage]": {
-                        required: true
-                    },
                     "reference_files[0][]": {
                         required: true
                     }
@@ -836,9 +822,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     },
                     "academic[0][secured_marks]": {
                         required: "Marks secured are required"
-                    },
-                    "academic[0][percentage]": {
-                        required: "Percentage is required"
                     },
                     "reference_files[0][]": {
                         required: "Reference files are required"

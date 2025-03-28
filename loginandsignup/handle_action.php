@@ -19,6 +19,9 @@ switch ($action) {
     case 'edit_profile':
         header("Location: edit_profile.php?id=" . $encrypted_id);
         break;
+    case 'tasklist':
+        header("Location: tasklist.php?id=" . $encrypted_id);
+        break;
     default:
         die("Unknown action.");
 }

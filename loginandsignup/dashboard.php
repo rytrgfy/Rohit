@@ -253,6 +253,7 @@ $result = $conn->query($sql);
             <div class="actions">
                 <form action="handle_action.php" method="POST">
                     <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                    <button type="submit" name="action" value="tasklist" class="action-btn view-btn">Add task</button>
 
                     <button type="submit" name="action" value="change_password" class="action-btn view-btn">Change
                         Password</button>

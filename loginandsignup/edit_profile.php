@@ -602,7 +602,7 @@ WHERE academic_details.signup_id = $id";
                                 </div>
                             </div>
 
-                            <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button>
+                            <!-- <button type="button" class="remove-btn" onclick="removeAcademicRow(this)">Remove</button> -->
                         </div>
                         <?php
                         $academicIndex++;

@@ -1,4 +1,5 @@
 <?php
+
 include "dbconn.php";
 session_start();
 
@@ -13,7 +14,7 @@ $error = '';
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $oldpassword = $_POST['oldpassword'];
+    $oldpassword = md5($_POST['oldpassword']); // Hash old password
     $newpassword = $_POST['newpassword'];
     $cnfpassword = $_POST['cnfpassword'];
 
@@ -25,22 +26,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $error = 'Failed to fetch user data.';
     } else {
         $data = $result->fetch_assoc();
-        $db_password = $data['password']; // Current password from database
+        $db_password = $data['password']; // Current password from database (MD5)
 
         // Validate passwords
         if ($oldpassword !== $db_password) {
             $error = 'Old password is incorrect!';
-        } elseif ($oldpassword == $newpassword) {
+        } elseif ($oldpassword == md5($newpassword)) { // Ensure new password is different
             $error = 'Old password cannot be the same as the new password!';
         } elseif ($newpassword !== $cnfpassword) {
             $error = 'New password and confirm password do not match!';
         } else {
+            // Hash new password with MD5
+            $hashedNewPassword = md5($newpassword);
+
             // Update password
-            $sql_update = "UPDATE signup SET password = '$newpassword' WHERE username = '$username'";
+            $sql_update = "UPDATE signup SET password = '$hashedNewPassword' WHERE username = '$username'";
             if ($conn->query($sql_update)) {
-                // $message = 'Password updated successfully!';
-                echo"<script>alert('Password updated successfully!');window.location.href='logout.php';</script>";
-                // header("Location: logout.php");
+                echo "<script>alert('Password updated successfully!'); window.location.href='logout.php';</script>";
                 exit();
             } else {
                 $error = 'Failed to update password.';
