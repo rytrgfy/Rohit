@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg,rgb(1, 19, 46) 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, rgb(1, 19, 46) 0%, #c3cfe2 100%);
             margin: 0;
             padding: 0;
             display: flex;
@@ -57,24 +57,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         /* Form Container */
         .container {
-            width: 100%;
-            max-width: 450px;
+            width: 70vw;
+            background-color: #c3cfe2;
+            /* max-width: 100%; */
+            /* max-width: 4px; */
             padding: 20px;
         }
 
         /* Form Box */
         .task-form {
-            background: #ffffff;
+            background:rgb(135, 133, 133);
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             padding: 30px;
             transition: all 0.3s ease-in-out;
         }
 
-        .task-form:hover {
+        /* .task-form:hover {
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
             transform: translateY(-5px);
-        }
+        } */
 
         /* Heading */
         h2 {
@@ -96,14 +98,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         input[type="text"],
         textarea,
         select {
-            width: 100%;
+            width: 90%; 
             padding: 12px 15px;
             margin-bottom: 15px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid rgb(148, 142, 142);
             border-radius: 8px;
             font-size: 15px;
             transition: all 0.3s ease;
             outline: none;
+            text-align: center;
         }
 
         /* Focus Effect */
@@ -138,7 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         /* Textarea */
         textarea {
-            resize: vertical;
+            /* resize: vertical;
+            resize: horizontal; */
             min-height: 100px;
         }
 
@@ -166,28 +170,33 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <body>
 
-    
-    <form action="" method="POST" id="taskForm" class="task-form">
-        <h2>Edit Task</h2>
-        <input type="hidden" name="submit_task" value="1">
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title"
-            value="<?php echo htmlspecialchars($res['title'], ENT_QUOTES, 'UTF-8'); ?>" required><br><br>
+    <div class="container">
 
-        <label for="description">Description:</label>
-        <textarea name="description" id="description"
-            required><?php echo htmlspecialchars($res['description'], ENT_QUOTES, 'UTF-8'); ?></textarea><br><br>
 
-        <label for="status">Status:</label>
-        <select name="status" id="status" required>
-            <option value="Pending" <?php echo ($res['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
-            <option value="In Progress" <?php echo ($res['status'] == 'In Progress') ? 'selected' : ''; ?>>In Progress
-            </option>
-            <option value="Completed" <?php echo ($res['status'] == 'Completed') ? 'selected' : ''; ?>>Completed</option>
-        </select><br><br>
 
-        <button type="submit">Update Task</button>
-    </form>
+        <form action="" method="POST" id="taskForm" class="task-form">
+            <h2>Edit Task</h2>
+            <input type="hidden" name="submit_task" value="1">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title"
+                value="<?php echo htmlspecialchars($res['title'], ENT_QUOTES, 'UTF-8'); ?>" required><br><br>
+
+            <label for="description">Description:</label>
+            <textarea name="description" id="description"
+                required><?php echo htmlspecialchars($res['description'], ENT_QUOTES, 'UTF-8'); ?></textarea><br><br>
+
+            <label for="status">Status:</label>
+            <select name="status" id="status" required>
+                <option value="Pending" <?php echo ($res['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
+                <option value="In Progress" <?php echo ($res['status'] == 'In Progress') ? 'selected' : ''; ?>>In Progress
+                </option>
+                <option value="Completed" <?php echo ($res['status'] == 'Completed') ? 'selected' : ''; ?>>Completed
+                </option>
+            </select><br><br>
+
+            <button type="submit">Update Task</button>
+        </form>
+    </div>
 
 
 

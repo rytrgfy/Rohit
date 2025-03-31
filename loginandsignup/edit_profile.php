@@ -102,10 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $referenceFiles = $_FILES['referenceFiles'];
     $previousReferenceFiles = $_POST['previousReferenceFiles'];
 
-    // Validate data
-    if (empty($name) || empty($contact) || empty($address) || empty($state) || empty($district) || empty($city)) {
-        die("Please fill all required fields.");
-    }
+    
 
     // Update user data
     $update_user_sql = "UPDATE signup SET name = '$name', contact = '$contact', address = '$address', state = '$state', dist = '$district', city = '$city'";

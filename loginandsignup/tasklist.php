@@ -10,7 +10,8 @@ if (!isset($_SESSION['user_id'])) {
 $id = $_SESSION['user_id'];
 
 // Fetch tasks from the database
-$sql = "SELECT * FROM task WHERE user_id = '$id'";
+// $sql = "SELECT * FROM task WHERE user_id = '$id' ordert by id desc";
+$sql = "SELECT * FROM task WHERE user_id = '$id' ORDER BY id DESC"; // Corrected SQL query
 $query = $conn->query($sql);
 
 if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['task_id']) && isset($_POST['status'])) {

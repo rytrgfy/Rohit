@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
 
         .container {
             width: 100%;
-            max-width: 450px;
+            max-width: 80%;
             padding: 20px;
         }
 
@@ -60,10 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
             transition: all 0.3s ease;
         }
 
-        .task-form:hover {
+        /* .task-form:hover {
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
             transform: translateY(-5px);
-        }
+        } */
 
         h2 {
             text-align: center;
@@ -83,26 +83,30 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
         input[type="text"],
         textarea,
         select {
-            width: 100%;
+            width: 95%;
             padding: 12px 15px;
             margin-bottom: 20px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid rgb(135, 214, 234);
             border-radius: 8px;
             font-size: 15px;
             transition: all 0.3s ease;
             outline: none;
+            background-color: #f9f9f9;
+            color: #34495e;
+            font-weight: 500;
+            text-align: center;
         }
 
         input[type="text"]:focus,
         textarea:focus,
         select:focus {
-            border-color: #3498db;
+            border-color:rgb(201, 232, 108);
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
 
         button {
             width: 100%;
-            background-color: #3498db;
+            background-color:rgb(96, 240, 237);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -116,9 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
         }
 
         button:hover {
-            background-color: #2980b9;
+            background-color:rgb(92, 179, 102);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            color: solid white;
         }
 
         textarea {
