@@ -100,13 +100,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
         input[type="text"]:focus,
         textarea:focus,
         select:focus {
-            border-color:rgb(201, 232, 108);
+            border-color: rgb(201, 232, 108);
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
 
         button {
             width: 100%;
-            background-color:rgb(96, 240, 237);
+            background-color: rgb(96, 240, 237);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
         }
 
         button:hover {
-            background-color:rgb(92, 179, 102);
+            background-color: rgb(92, 179, 102);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
             color: solid white;
@@ -153,7 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
 
 
 <body>
+
     <div class="container">
+        <a href="tasklist.php">go back</a>
         <h2>Assign Task</h2><br>
         <form id="taskForm" class="task-form" action="" method="POST">
             <input type="hidden" name="submit_task" value="1">
@@ -173,6 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
             <button type="submit">Add Task</button>
         </form>
     </div>
+
 </body>
 
 <script>

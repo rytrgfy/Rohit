@@ -16,9 +16,14 @@ if (isset($_GET['id'])) {
     if (!is_numeric($id) || $id <= 0) {
         die("Invalid ID.");
     }
+    if($id == 78){
+        header("Location: admin.php");
+        exit();
+    }
 } else {
     die("ID not provided.");
 }
+
 
 // Fetch user data
 $fetch_data_sql = "SELECT 

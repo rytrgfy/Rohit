@@ -3,11 +3,15 @@ include "dbconn.php";
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: index.html");
     exit();
 }
 
 $id = $_SESSION['user_id'];
+if($id == 78){
+    header("Location: admin.php");
+    exit();
+}
 
 // Fetch tasks from the database
 // $sql = "SELECT * FROM task WHERE user_id = '$id' ordert by id desc";
@@ -43,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['task_id']) && isset($_
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid black;
             padding: 8px;
             text-align: left;
@@ -64,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['task_id']) && isset($_
         }
 
         .completed-row {
-            background-color:rgb(198, 232, 174);
+            background-color: rgb(198, 232, 174);
             color: gray;
         }
 
@@ -79,6 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['task_id']) && isset($_
 <body>
 
     <h2>Task List</h2>
+
+    <button type="submit"><a href="dashboard.php">go back</a></button>
+
 
     <form action="assigntask.php" method="post">
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
@@ -108,9 +116,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['task_id']) && isset($_
                         <td>
                             <!-- Status Update Dropdown -->
                             <select class="status-dropdown" data-task-id="<?php echo $row['id']; ?>" <?php echo ($row['status'] == 'Completed') ? 'disabled' : ''; ?>>
-                                <option value="Pending" <?php echo ($row['status'] == 'Pending') ? 'selected' : ''; ?>>Pending</option>
-                                <option value="In Progress" <?php echo ($row['status'] == 'In Progress') ? 'selected' : ''; ?>>In Progress</option>
-                                <option value="Completed" <?php echo ($row['status'] == 'Completed') ? 'selected' : ''; ?>>Completed</option>
+                                <option value="Pending" <?php echo ($row['status'] == 'Pending') ? 'selected' : ''; ?>>Pending
+                                </option>
+                                <option value="In Progress" <?php echo ($row['status'] == 'In Progress') ? 'selected' : ''; ?>>In
+                                    Progress</option>
+                                <option value="Completed" <?php echo ($row['status'] == 'Completed') ? 'selected' : ''; ?>>
+                                    Completed</option>
                             </select>
 
                             <!-- Edit Button -->

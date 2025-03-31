@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         /* Form Box */
         .task-form {
-            background:rgb(135, 133, 133);
+            background: rgb(135, 133, 133);
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             padding: 30px;
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         input[type="text"],
         textarea,
         select {
-            width: 90%; 
+            width: 90%;
             padding: 12px 15px;
             margin-bottom: 15px;
             border: 2px solid rgb(148, 142, 142);
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <div class="container">
 
 
-
+        <a href="tasklist.php">go back</a>
         <form action="" method="POST" id="taskForm" class="task-form">
             <h2>Edit Task</h2>
             <input type="hidden" name="submit_task" value="1">

@@ -10,6 +10,13 @@ $email = $_SESSION['username'];
 
 $sql = "SELECT * FROM signup WHERE id = $user_id";
 $result = $conn->query($sql);
+
+if($user_id == 78){
+    header("Location: 404.php");
+    exit();
+}
+
+
 ?>
 
 

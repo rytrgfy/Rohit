@@ -7,6 +7,10 @@ session_start();
 if (!isset($_SESSION['username'])) {
     die("Unauthorized access. Please log in.");
 }
+if($_SESSION['username'] == 'Admin'){
+    header("Location: admin.php");
+    exit();
+}
 
 $username = $_SESSION['username'];
 $message = '';
