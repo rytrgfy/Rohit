@@ -75,7 +75,7 @@ $first_record = array_map(function ($value) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary: #4361ee;
+            --primary:rgb(71, 83, 136);
             --secondary: #3f37c9;
             --light: #f8f9fa;
             --dark: #212529;
@@ -260,7 +260,7 @@ $first_record = array_map(function ($value) {
         }
 
         .progress-container {
-            background-color: #e9ecef;
+            background-color:rgb(148, 179, 115);
             border-radius: 0.5rem;
             height: 1.5rem;
             margin-bottom: 1rem;

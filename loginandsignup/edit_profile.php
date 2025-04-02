@@ -630,10 +630,7 @@ WHERE academic_details.signup_id = $id";
                     <input type="password" readonly name="password" value='<?php echo $data['password'] ?>'>
                 </div>
 
-                <!-- <div class="form-group cnfpassword">
-                    <label>Confirm Password:</label>
-                    <input type="password" name="cnfpassword" placeholder="Confirm your password">
-                </div> -->
+                
             </div>
 
             <div class="submit-container">

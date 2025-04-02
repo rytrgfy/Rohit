@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     // Check if user exists
     if (!$data) {
-        echo "<script>alert('Login failed! Invalid username or password. Try signing up.'); window.location.href = 'index.html';</script>";
+        echo "<script>alert('Login failed! Invalid username or password. Try sign up.'); window.location.href = 'index.html';</script>";
         exit();
     }
 

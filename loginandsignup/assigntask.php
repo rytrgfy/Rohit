@@ -176,43 +176,44 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
         </form>
     </div>
 
-</body>
 
-<script>
-    $(document).ready(function () {
-        $("#taskForm").validate({
-            rules: {
-                title: {
-                    required: true,
-                    minlength: 3
+
+    <script>
+        $(document).ready(function () {
+            $("#taskForm").validate({
+                rules: {
+                    title: {
+                        required: true,
+                        minlength: 3
+                    },
+                    description: {
+                        required: true,
+                        minlength: 5
+                    },
+                    status: {
+                        required: true
+                    }
                 },
-                description: {
-                    required: true,
-                    minlength: 5
+                messages: {
+                    title: {
+                        required: "Please enter a title",
+                        minlength: "Title must be at least 3 characters"
+                    },
+                    description: {
+                        required: "Please enter a description",
+                        minlength: "Description must be at least 5 characters"
+                    },
+                    status: {
+                        required: "Please select a status"
+                    }
                 },
-                status: {
-                    required: true
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element);
                 }
-            },
-            messages: {
-                title: {
-                    required: "Please enter a title",
-                    minlength: "Title must be at least 3 characters"
-                },
-                description: {
-                    required: "Please enter a description",
-                    minlength: "Description must be at least 5 characters"
-                },
-                status: {
-                    required: "Please select a status"
-                }
-            },
-            errorPlacement: function (error, element) {
-                error.insertAfter(element);
-            }
+            });
         });
-    });
-</script>
+    </script>
+</body>
 
 
 
