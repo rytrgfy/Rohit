@@ -153,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit_task'])) {
 
 
 <body>
-
     <div class="container">
         <a href="tasklist.php">go back</a>
         <h2>Assign Task</h2><br>
