@@ -75,16 +75,16 @@ $first_record = array_map(function ($value) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary:rgb(71, 83, 136);
-            --secondary: #3f37c9;
-            --light: #f8f9fa;
+            --primary:rgb(47, 104, 154);
+            --secondary:rgb(57, 184, 50);
+            --light:rgba(201, 199, 192, 0.49);
             --dark: #212529;
-            --success: #4cc9f0;
-            --info: #4895ef;
+            --success:rgb(153, 164, 168);
+            --info:rgb(173, 198, 228);
             --warning: #f72585;
             --danger: #e63946;
             --border-radius: 0.5rem;
-            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --box-shadow: 1rem 0.56rem 1rem rgba(133, 195, 223, 0.79);
         }
 
         * {
@@ -95,7 +95,7 @@ $first_record = array_map(function ($value) {
         }
 
         body {
-            background-color: #f5f7fb;
+            background-color:rgb(150, 151, 155);
             color: var(--dark);
             line-height: 1.6;
         }
@@ -260,7 +260,7 @@ $first_record = array_map(function ($value) {
         }
 
         .progress-container {
-            background-color:rgb(148, 179, 115);
+            background-color:rgb(228, 228, 228);
             border-radius: 0.5rem;
             height: 1.5rem;
             margin-bottom: 1rem;
